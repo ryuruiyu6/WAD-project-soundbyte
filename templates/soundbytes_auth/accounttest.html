@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoundByte - Music Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        :root {
+            --primary: #1DB954;
+            --primary-dark: #1AA34A;
+            --secondary: #FF6B6B;
+            --dark: #191414;
+            --light: #FFFFFF;
+            --gray: #B3B3B3;
+            --background: #121212;
+        }
+
+        body {
+            background: var(--background);
+            min-height: 100vh;
+            color: var(--light);
+        }
+
+        /* Login/Signup Styles */
+        .auth-container {
+            max-width: 450px;
+            margin: 50px auto;
+            background: #282828;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-header h1 {
+            color: var(--primary);
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .auth-header p {
+            color: var(--gray);
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: #3E3E3E;
+            padding: 5px;
+            border-radius: 10px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--gray);
+            transition: all 0.3s;
+        }
+
+        .auth-tab.active {
+            background: var(--primary);
+            color: var(--light);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--light);
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #3E3E3E;
+            border-radius: 10px;
+            font-size: 16px;
+            background: #3E3E3E;
+            color: var(--light);
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #4A4A4A;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: var(--light);
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .auth-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.02);
+        }
+
+        /* Main App Styles */
+        .app-container {
+            display: none;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .app-container.active {
+            display: block;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: #282828;
+            border-radius: 15px;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--light);
+            font-size: 14px;
+            margin-left: 5px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: var(--gray);
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover {
+            color: var(--light);
+            background: #3E3E3E;
+        }
+
+        .nav-item.active {
+            background: var(--primary);
+            color: var(--light);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .user-badge {
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .badge-listener { background: #1DB954; color: var(--dark); }
+        .badge-artist { background: #FF6B6B; color: var(--light); }
+        .badge-producer { background: #FFD93D; color: var(--dark); }
+
+        .user-name {
+            color: var(--light);
+            font-weight: 500;
+        }
+
+        .signout-btn {
+            padding: 8px 20px;
+            background: transparent;
+            color: var(--gray);
+            border: 2px solid #3E3E3E;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .signout-btn:hover {
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        /* Main Content */
+        .main-content {
+            background: #282828;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 28px;
+            color: var(--light);
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Profile Section */
+        .profile-header {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: var(--light);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 4px solid var(--primary);
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+            border-color: var(--light);
+        }
+
+        .profile-avatar input {
+            display: none;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stat-box {
+            background: #3E3E3E;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* Trending Section */
+        .trending-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .trending-card {
+            background: linear-gradient(135deg, #1DB954, #1AA34A);
+            padding: 25px;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .trending-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(29, 185, 84, 0.3);
+        }
+
+        .trending-rank {
+            font-size: 60px;
+            font-weight: 700;
+            opacity: 0.2;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+
+        .trending-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .trending-artist {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .trending-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+        }
+
+        .genre-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .genre-tag {
+            padding: 8px 20px;
+            background: #3E3E3E;
+            border-radius: 30px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .genre-tag:hover {
+            background: var(--primary);
+        }
+
+        .genre-tag.active {
+            background: var(--primary);
+        }
+
+        /* Playlists Section */
+        .playlists-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .create-playlist-btn {
+            padding: 12px 30px;
+            background: var(--primary);
+            color: var(--light);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .create-playlist-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .playlists-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .playlist-card {
+            background: #3E3E3E;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .playlist-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .playlist-cover {
+            height: 150px;
+            position: relative;
+        }
+
+        .playlist-info {
+            padding: 15px;
+        }
+
+        .playlist-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .playlist-meta {
+            font-size: 13px;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        .playlist-actions {
+            display: flex;
+            gap: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .playlist-card:hover .playlist-actions {
+            opacity: 1;
+        }
+
+        .playlist-actions button {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .edit-btn {
+            background: #FFD93D;
+            color: var(--dark);
+        }
+
+        .edit-btn:hover {
+            background: #FFB347;
+        }
+
+        .delete-btn {
+            background: var(--secondary);
+            color: var(--light);
+        }
+
+        .delete-btn:hover {
+            background: #FF5252;
+        }
+
+        /* Songs List */
+        .songs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0 20px;
+        }
+
+        .songs-list {
+            background: #3E3E3E;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .song-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #4A4A4A;
+            transition: background 0.3s;
+        }
+
+        .song-item:hover {
+            background: #4A4A4A;
+        }
+
+        .song-number {
+            width: 40px;
+            color: var(--gray);
+        }
+
+        .song-info {
+            flex: 1;
+        }
+
+        .song-title {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .song-artist {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .song-plays {
+            margin-right: 20px;
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .add-to-playlist {
+            padding: 8px 20px;
+            background: var(--primary);
+            color: var(--light);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .add-to-playlist:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Upload Section */
+        .upload-area {
+            border: 3px dashed #4A4A4A;
+            border-radius: 15px;
+            padding: 50px;
+            text-align: center;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: #3E3E3E;
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary);
+            background: #3E3E3E;
+        }
+
+        .upload-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .uploaded-files {
+            margin-bottom: 30px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: #3E3E3E;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .file-size {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .file-progress {
+            width: 200px;
+            height: 8px;
+            background: #4A4A4A;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .file-progress-bar {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .file-status {
+            margin-left: 20px;
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .upload-form {
+            background: #3E3E3E;
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #282828;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h2 {
+            color: var(--light);
+        }
+
+        .close-btn {
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--gray);
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: var(--secondary);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary);
+            color: var(--light);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1001;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: #3E3E3E;
+            border-radius: 30px;
+            padding: 5px 5px 5px 20px;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--light);
+            padding: 10px 0;
+            font-size: 16px;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+        }
+
+        .search-bar button {
+            padding: 10px 25px;
+            background: var(--primary);
+            color: var(--light);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .search-bar button:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .nav-menu {
+                justify-content: center;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .song-item {
+                flex-wrap: wrap;
+            }
+            
+            .file-item {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .file-progress {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login/Signup Container -->
+    <div id="authContainer" class="auth-container">
+        <div class="auth-header">
+            <h1>🔊 SoundByte</h1>
+            <p>Where music comes to life</p>
+        </div>
+
+        <div class="auth-tabs">
+            <button class="auth-tab active" onclick="switchAuthTab('login')">Log In</button>
+            <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="loginForm" class="auth-form active">
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="auth-btn">Log In</button>
+            </form>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signupForm" class="auth-form">
+            <form onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label>Display Name</label>
+                    <input type="text" id="signupName" placeholder="How should we call you?" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="signupEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="signupPassword" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label>I am a:</label>
+                    <select id="signupRole" required>
+                        <option value="listener">🎧 Music Lover</option>
+                        <option value="artist">🎤 Artist</option>
+                        <option value="producer">🎚️ Producer</option>
+                    </select>
+                </div>
+                <button type="submit" class="auth-btn">Create Account</button>
+            </form>
+        </div>
+
+        <!-- Demo Credentials -->
+        <div style="margin-top: 30px; padding: 20px; background: #3E3E3E; border-radius: 10px;">
+            <h4 style="margin-bottom: 10px; color: var(--gray);">🎭 Demo Accounts:</h4>
+            <p style="color: var(--gray); font-size: 13px; margin-bottom: 5px;"><strong style="color: var(--primary);">Listener:</strong> listener@soundbyte.com / password123</p>
+            <p style="color: var(--gray); font-size: 13px; margin-bottom: 5px;"><strong style="color: var(--primary);">Artist:</strong> artist@soundbyte.com / password123</p>
+            <p style="color: var(--gray); font-size: 13px;"><strong style="color: var(--primary);">Producer:</strong> producer@soundbyte.com / password123</p>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="appContainer" class="app-container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="logo">🔊 SoundByte <span>beta</span></div>
+            <div class="nav-menu">
+                <span class="nav-item" onclick="showSection('profile')">Profile</span>
+                <span class="nav-item" onclick="showSection('trending')">Trending</span>
+                <span class="nav-item" onclick="showSection('playlists')">My Library</span>
+                <span class="nav-item" onclick="showSection('upload')">Upload</span>
+                <div class="user-menu">
+                    <span id="userBadge" class="user-badge">Listener</span>
+                    <span class="user-name" id="userName">User</span>
+                    <button class="signout-btn" onclick="signout()">Sign Out</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Profile Section -->
+            <div id="profileSection" class="section active">
+                <h2 class="section-title">✨ Your Profile</h2>
+                
+                <div class="profile-header">
+                    <div class="profile-avatar" onclick="document.getElementById('avatarInput').click()">
+                        <span id="avatarEmoji">👤</span>
+                        <input type="file" id="avatarInput" accept="image/*" onchange="updateAvatar(event)">
+                    </div>
+                    
+                    <div class="profile-info">
+                        <div class="form-group">
+                            <label>Display Name</label>
+                            <input type="text" id="profileName" value="" onchange="autoSaveProfile()">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Bio</label>
+                            <textarea id="profileBio" rows="3" onchange="autoSaveProfile()" placeholder="Tell us about yourself..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" id="profileLocation" value="" onchange="autoSaveProfile()" placeholder="City, Country">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Website</label>
+                            <input type="url" id="profileWebsite" value="" onchange="autoSaveProfile()" placeholder="https://">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="profile-stats">
+                    <div class="stat-box">
+                        <div class="stat-number" id="statFollowers">0</div>
+                        <div class="stat-label">Followers</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="statFollowing">0</div>
+                        <div class="stat-label">Following</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="statPlaylists">0</div>
+                        <div class="stat-label">Playlists</div>
+                    </div>
+                </div>
+                
+                <button class="auth-btn" style="margin-top: 20px;" onclick="saveProfile()">Save Changes</button>
+            </div>
+
+            <!-- Trending Section -->
+            <div id="trendingSection" class="section">
+                <h2 class="section-title">🔥 Trending on SoundByte</h2>
+                
+                <div class="search-bar">
+                    <input type="text" id="trendingSearch" placeholder="Search songs, artists, or genres..." onkeyup="filterTrending()">
+                    <button onclick="filterTrending()">Search</button>
+                </div>
+                
+                <div class="genre-tags" id="genreTags">
+                    <span class="genre-tag active" onclick="filterByGenre('all')">All</span>
+                    <span class="genre-tag" onclick="filterByGenre('Pop')">Pop</span>
+                    <span class="genre-tag" onclick="filterByGenre('Hip-Hop')">Hip-Hop</span>
+                    <span class="genre-tag" onclick="filterByGenre('Rock')">Rock</span>
+                    <span class="genre-tag" onclick="filterByGenre('Electronic')">Electronic</span>
+                    <span class="genre-tag" onclick="filterByGenre('R&B')">R&B</span>
+                    <span class="genre-tag" onclick="filterByGenre('Jazz')">Jazz</span>
+                </div>
+                
+                <div class="trending-grid" id="trendingGrid">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Playlists Section -->
+            <div id="playlistsSection" class="section">
+                <div class="playlists-header">
+                    <h2 class="section-title">📚 Your Library</h2>
+                    <button class="create-playlist-btn" onclick="openCreatePlaylistModal()">+ New Playlist</button>
+                </div>
+                
+                <div class="playlists-grid" id="playlistsGrid">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+                
+                <div class="songs-header">
+                    <h2 class="section-title">🎵 All Songs</h2>
+                    <div class="search-bar" style="width: 300px;">
+                        <input type="text" id="songSearch" placeholder="Search songs..." onkeyup="filterSongs()">
+                    </div>
+                </div>
+                
+                <div class="songs-list" id="songsList">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Upload Section -->
+            <div id="uploadSection" class="section">
+                <h2 class="section-title">📤 Upload to SoundByte</h2>
+                
+                <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+                    <div class="upload-icon">🎵</div>
+                    <h3>Drag & drop or click to upload</h3>
+                    <p style="color: var(--gray); margin-top: 10px;">MP3, WAV, FLAC up to 50MB</p>
+                    <input type="file" id="fileInput" multiple accept="audio/*" style="display: none;" onchange="handleFileUpload(event)">
+                </div>
+                
+                <div class="uploaded-files" id="uploadedFiles">
+                    <!-- Uploaded files will appear here -->
+                </div>
+                
+                <div class="upload-form" id="uploadForm" style="display: none;">
+                    <h3 style="margin-bottom: 20px;">Song Details</h3>
+                    
+                    <div class="form-group">
+                        <label>Song Title</label>
+                        <input type="text" id="uploadTitle" placeholder="Enter song title">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Artist Name</label>
+                        <input type="text" id="uploadArtist" placeholder="Enter artist name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Genre</label>
+                        <select id="uploadGenre">
+                            <option>Pop</option>
+                            <option>Hip-Hop</option>
+                            <option>Rock</option>
+                            <option>Electronic</option>
+                            <option>R&B</option>
+                            <option>Jazz</option>
+                            <option>Classical</option>
+                        </select>
+                    </div>
+                    
+                    <button class="auth-btn" onclick="publishUpload()">Publish to SoundByte</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Playlist Modal -->
+    <div id="playlistModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Playlist</h2>
+                <span class="close-btn" onclick="closeModal('playlistModal')">&times;</span>
+            </div>
+            
+            <div class="form-group">
+                <label>Playlist Name</label>
+                <input type="text" id="newPlaylistName" placeholder="e.g., Chill Vibes">
+            </div>
+            
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="newPlaylistDesc" rows="3" placeholder="What's this playlist about?"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Cover Color</label>
+                <select id="newPlaylistColor">
+                    <option value="linear-gradient(135deg, #1DB954, #1AA34A)">SoundByte Green</option>
+                    <option value="linear-gradient(135deg, #FF6B6B, #FF5252)">Sunset Red</option>
+                    <option value="linear-gradient(135deg, #FFD93D, #FFB347)">Golden Hour</option>
+                    <option value="linear-gradient(135deg, #6B5B95, #88B0D3)">Ocean Blue</option>
+                </select>
+            </div>
+            
+            <button class="auth-btn" onclick="createPlaylist()">Create Playlist</button>
+        </div>
+    </div>
+
+    <!-- Edit Playlist Modal -->
+    <div id="editPlaylistModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Playlist</h2>
+                <span class="close-btn" onclick="closeModal('editPlaylistModal')">&times;</span>
+            </div>
+            
+            <div class="form-group">
+                <label>Playlist Name</label>
+                <input type="text" id="editPlaylistName">
+            </div>
+            
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="editPlaylistDesc" rows="3"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Add/Remove Songs</label>
+                <div id="editPlaylistSongs" style="max-height: 200px; overflow-y: auto; background: #3E3E3E; padding: 10px; border-radius: 10px;">
+                    <!-- Songs will be populated here -->
+                </div>
+            </div>
+            
+            <button class="auth-btn" onclick="savePlaylistEdit()">Save Changes</button>
+        </div>
+    </div>
+
+    <!-- Add to Playlist Modal -->
+    <div id="addToPlaylistModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add to Playlist</h2>
+                <span class="close-btn" onclick="closeModal('addToPlaylistModal')">&times;</span>
+            </div>
+            
+            <div id="playlistSelection" style="margin-bottom: 20px;">
+                <!-- Playlists will be populated here -->
+            </div>
+            
+            <button class="auth-btn" onclick="addToPlaylist()">Add to Playlist</button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // Initialize SoundByte Data
+        if (!localStorage.getItem('soundbyte_users')) {
+            const defaultUsers = [
+                { id: 1, name: 'Alex Chen', email: 'listener@soundbyte.com', password: 'password123', role: 'listener', bio: 'Music enthusiast', location: 'New York', website: 'https://soundbyte.com/alex', followers: 234, following: 156 },
+                { id: 2, name: 'Taylor Swift', email: 'artist@soundbyte.com', password: 'password123', role: 'artist', bio: 'Singer-songwriter', location: 'Nashville', website: 'https://taylorswift.com', followers: 1250000, following: 123 },
+                { id: 3, name: 'Max Martin', email: 'producer@soundbyte.com', password: 'password123', role: 'producer', bio: 'Music producer', location: 'Stockholm', website: 'https://maxmartin.com', followers: 450000, following: 89 }
+            ];
+            localStorage.setItem('soundbyte_users', JSON.stringify(defaultUsers));
+        }
+
+        if (!localStorage.getItem('soundbyte_songs')) {
+            const defaultSongs = [
+                { id: 1, title: 'Cruel Summer', artist: 'Taylor Swift', genre: 'Pop', plays: 1523400, uploadedBy: 2 },
+                { id: 2, title: 'Blinding Lights', artist: 'The Weeknd', genre: 'Pop', plays: 2345600, uploadedBy: 3 },
+                { id: 3, title: 'Industry Baby', artist: 'Lil Nas X', genre: 'Hip-Hop', plays: 1892300, uploadedBy: 1 },
+                { id: 4, title: 'Flowers', artist: 'Miley Cyrus', genre: 'Pop', plays: 2123400, uploadedBy: 2 },
+                { id: 5, title: 'Bohemian Rhapsody', artist: 'Queen', genre: 'Rock', plays: 3456700, uploadedBy: 1 },
+                { id: 6, title: 'Snooze', artist: 'SZA', genre: 'R&B', plays: 1123400, uploadedBy: 2 },
+                { id: 7, title: 'Take Five', artist: 'Dave Brubeck', genre: 'Jazz', plays: 823400, uploadedBy: 3 },
+                { id: 8, title: 'Starboy', artist: 'The Weeknd', genre: 'Pop', plays: 1982300, uploadedBy: 3 },
+                { id: 9, title: 'Lose Yourself', artist: 'Eminem', genre: 'Hip-Hop', plays: 2783400, uploadedBy: 1 },
+                { id: 10, title: 'Hotel California', artist: 'Eagles', genre: 'Rock', plays: 2123400, uploadedBy: 2 }
+            ];
+            localStorage.setItem('soundbyte_songs', JSON.stringify(defaultSongs));
+        }
+
+        if (!localStorage.getItem('soundbyte_playlists')) {
+            const defaultPlaylists = [
+                { id: 1, name: 'Chill Vibes', description: 'Relaxing tunes for your day', songs: [1, 6, 7], color: 'linear-gradient(135deg, #1DB954, #1AA34A)', createdBy: 1 },
+                { id: 2, name: 'Workout Mix', description: 'High energy for your workout', songs: [2, 3, 8], color: 'linear-gradient(135deg, #FF6B6B, #FF5252)', createdBy: 2 },
+                { id: 3, name: 'Road Trip', description: 'Perfect for long drives', songs: [4, 5, 9, 10], color: 'linear-gradient(135deg, #FFD93D, #FFB347)', createdBy: 3 }
+            ];
+            localStorage.setItem('soundbyte_playlists', JSON.stringify(defaultPlaylists));
+        }
+
+        let currentUser = null;
+        let currentEditPlaylistId = null;
+        let currentSongId = null;
+        let uploadedFiles = [];
+        let currentGenre = 'all';
+        let searchTerm = '';
+
+        // Check if user is logged in
+        const savedUser = JSON.parse(localStorage.getItem('soundbyte_currentUser'));
+        if (savedUser) {
+            currentUser = savedUser;
+            showApp(currentUser);
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.background = type === 'success' ? 'var(--primary)' : 'var(--secondary)';
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function switchAuthTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            
+            if (tab === 'login') {
+                document.querySelector('.auth-tab').classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                document.querySelectorAll('.auth-tab')[1].classList.add('active');
+                document.getElementById('signupForm').classList.add('active');
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const users = JSON.parse(localStorage.getItem('soundbyte_users'));
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('soundbyte_currentUser', JSON.stringify(user));
+                showApp(user);
+                showToast(`Welcome back, ${user.name}!`);
+            } else {
+                showToast('Invalid credentials!', 'error');
+            }
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const role = document.getElementById('signupRole').value;
+            
+            const users = JSON.parse(localStorage.getItem('soundbyte_users'));
+            
+            if (users.find(u => u.email === email)) {
+                showToast('Email already exists!', 'error');
+                return;
+            }
+            
+            const newUser = {
+                id: users.length + 1,
+                name: name,
+                email: email,
+                password: password,
+                role: role,
+                bio: '',
+                location: '',
+                website: '',
+                followers: 0,
+                following: 0
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('soundbyte_users', JSON.stringify(users));
+            localStorage.setItem('soundbyte_currentUser', JSON.stringify(newUser));
+            currentUser = newUser;
+            
+            showApp(newUser);
+            showToast(`Welcome to SoundByte, ${name}!`);
+        }
+
+        function showApp(user) {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('appContainer').classList.add('active');
+            
+            document.getElementById('userName').textContent = user.name;
+            
+            const badge = document.getElementById('userBadge');
+            badge.textContent = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+            badge.className = `user-badge badge-${user.role}`;
+            
+            // Load profile data
+            document.getElementById('profileName').value = user.name || '';
+            document.getElementById('profileBio').value = user.bio || '';
+            document.getElementById('profileLocation').value = user.location || '';
+            document.getElementById('profileWebsite').value = user.website || '';
+            
+            document.getElementById('statFollowers').textContent = user.followers || 0;
+            document.getElementById('statFollowing').textContent = user.following || 0;
+            
+            // Load initial data
+            loadTrending();
+            loadPlaylists();
+            loadSongs();
+            
+            // Show profile section by default
+            showSection('profile');
+        }
+
+        function signout() {
+            localStorage.removeItem('soundbyte_currentUser');
+            currentUser = null;
+            document.getElementById('authContainer').style.display = 'block';
+            document.getElementById('appContainer').classList.remove('active');
+            
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            
+            showToast('Signed out successfully');
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(section + 'Section').classList.add('active');
+        }
+
+        // Profile Functions
+        function updateAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('avatarEmoji').textContent = '📸';
+                    showToast('Avatar updated!');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function autoSaveProfile() {
+            // Auto-save indicator
+        }
+
+        function saveProfile() {
+            const users = JSON.parse(localStorage.getItem('soundbyte_users'));
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            
+            if (userIndex !== -1) {
+                users[userIndex].name = document.getElementById('profileName').value;
+                users[userIndex].bio = document.getElementById('profileBio').value;
+                users[userIndex].location = document.getElementById('profileLocation').value;
+                users[userIndex].website = document.getElementById('profileWebsite').value;
+                
+                localStorage.setItem('soundbyte_users', JSON.stringify(users));
+                localStorage.setItem('soundbyte_currentUser', JSON.stringify(users[userIndex]));
+                currentUser = users[userIndex];
+                
+                document.getElementById('userName').textContent = currentUser.name;
+                showToast('Profile updated successfully!');
+            }
+        }
+
+        // Trending Functions
+        function loadTrending() {
+            const songs = JSON.parse(localStorage.getItem('soundbyte_songs'));
+            let filteredSongs = [...songs];
+            
+            // Apply genre filter
+            if (currentGenre !== 'all') {
+                filteredSongs = filteredSongs.filter(s => s.genre === currentGenre);
+            }
+            
+            // Apply search filter
+            if (searchTerm) {
+                const term = searchTerm.toLowerCase();
+                filteredSongs = filteredSongs.filter(s => 
+                    s.title.toLowerCase().includes(term) || 
+                    s.artist.toLowerCase().includes(term) ||
+                    s.genre.toLowerCase().includes(term)
+                );
+            }
+            
+            // Sort by plays
+            const trending = filteredSongs.sort((a, b) => b.plays - a.plays).slice(0, 6);
+            
+            const grid = document.getElementById('trendingGrid');
+            grid.innerHTML = trending.map((song, index) => `
+                <div class="trending-card" onclick="playSong(${song.id})">
+                    <div class="trending-rank">#${index + 1}</div>
+                    <div class="trending-title">${song.title}</div>
+                    <div class="trending-artist">${song.artist}</div>
+                    <div class="trending-stats">
+                        <span>🎵 ${(song.plays / 1000000).toFixed(1)}M plays</span>
+                        <span>🏷️ ${song.genre}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterByGenre(genre) {
+            currentGenre = genre;
+            
+            document.querySelectorAll('.genre-tag').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            loadTrending();
+        }
+
+        function filterTrending() {
+            searchTerm = document.getElementById('trendingSearch').value;
+            loadTrending();
+        }
+
+        function playSong(songId) {
+            const songs = JSON.parse(localStorage.getItem('soundbyte_songs'));
+            const song = songs.find(s => s.id === songId);
+            
+            if (song) {
+                // Increment plays
+                song.plays += 1;
+                localStorage.setItem('soundbyte_songs', JSON.stringify(songs));
+                
+                showToast(`Now playing: ${song.title} by ${song.artist}`);
+            }
+        }
+
+        // Playlist Functions
+        function loadPlaylists() {
+            const playlists = JSON.parse(localStorage.getItem('soundbyte_playlists'));
+            const userPlaylists = playlists.filter(p => p.createdBy === currentUser.id);
+            
+            const grid = document.getElementById('playlistsGrid');
+            
+            if (userPlaylists.length === 0) {
+                grid.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 40px;">You haven\'t created any playlists yet. Click "New Playlist" to get started!</p>';
+            } else {
+                grid.innerHTML = userPlaylists.map(playlist => `
+                    <div class="playlist-card">
+                        <div class="playlist-cover" style="background: ${playlist.color}"></div>
+                        <div class="playlist-info">
+                            <div class="playlist-name">${playlist.name}</div>
+                            <div class="playlist-meta">${playlist.songs.length} songs • ${playlist.description.substring(0, 30)}${playlist.description.length > 30 ? '...' : ''}</div>
+                            <div class="playlist-actions">
+                                <button class="edit-btn" onclick="openEditPlaylistModal(${playlist.id})">Edit</button>
+                                <button class="delete-btn" onclick="deletePlaylist(${playlist.id})">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            document.getElementById('statPlaylists').textContent = userPlaylists.length;
+        }
+
+        function loadSongs() {
+            const songs = JSON.parse(localStorage.getItem('soundbyte_songs'));
+            const searchTerm = document.getElementById('songSearch')?.value.toLowerCase() || '';
+            
+            let filteredSongs = songs;
+            if (searchTerm) {
+                filteredSongs = songs.filter(s => 
+                    s.title.toLowerCase().includes(searchTerm) || 
+                    s.artist.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            const list = document.getElementById('songsList');
+            
+            list.innerHTML = filteredSongs.map((song, index) => `
+                <div class="song-item">
+                    <div class="song-number">${index + 1}</div>
+                    <div class="song-info">
+                        <div class="song-title">${song.title}</div>
+                        <div class="song-artist">${song.artist} • ${song.genre}</div>
+                    </div>
+                    <div class="song-plays">${(song.plays / 1000000).toFixed(1)}M plays</div>
+                    <button class="add-to-playlist" onclick="openAddToPlaylistModal(${song.id})">+ Add</button>
+                </div>
+            `).join('');
+        }
+
+        function filterSongs() {
+            loadSongs();
+        }
+
+        function openCreatePlaylistModal() {
+            document.getElementById('playlistModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function createPlaylist() {
+            const name = document.getElementById('newPlaylistName').value;
+            const description = document.getElementById('newPlaylistDesc').value;
+            const color = document.getElementById('newPlaylistColor').value;
+            
+            if (!name) {
+                showToast('Please enter a playlist name', 'error');
+                return;
+            }
+            
+            const playlists = JSON.parse(localStorage.getItem('soundbyte_playlists'));
+            const newPlaylist = {
+                id: playlists.length + 1,
+                name: name,
+                description: description,
+                songs: [],
+                color: color,
+                createdBy: currentUser.id
+            };
+            
+            playlists.push(newPlaylist);
+            localStorage.setItem('soundbyte_playlists', JSON.stringify(playlists));
+            
+            closeModal('playlistModal');
+            loadPlaylists();
+            
+            document.getElementById('newPlaylistName').value = '';
+            document.getElementById('newPlaylistDesc').value = '';
+            
+            showToast('Playlist created successfully!');
+        }
+
+        function openEditPlaylistModal(playlistId) {
+            currentEditPlaylistId = playlistId;
+            const playlists = JSON.parse(localStorage.getItem('soundbyte_playlists'));
+            const playlist = playlists.find(p => p.id === playlistId);
+            
+            if (playlist) {
+                document.getElementById('editPlaylistName').value = playlist.name;
+                document.getElementById('editPlaylistDesc').value = playlist.description;
+                
+                const songs = JSON.parse(localStorage.getItem('soundbyte_songs'));
+                const songsContainer = document.getElementById('editPlaylistSongs');
+                
+                songsContainer.innerHTML = songs.map(song => `
+                    <div style="display: flex; align-items: center; margin-bottom: 10px; padding: 5px;">
+                        <input type="checkbox" value="${song.id}" ${playlist.songs.includes(song.id) ? 'checked' : ''} style="margin-right: 10px;">
+                        <span>${song.title} - ${song.artist}</span>
+                    </div>
+                `).join('');
+                
+                document.getElementById('editPlaylistModal').classList.add('active');
+            }
+        }
+
+        function savePlaylistEdit() {
+            const playlists = JSON.parse(localStorage.getItem('soundbyte_playlists'));
+            const playlist = playlists.find(p => p.id === currentEditPlaylistId);
+            
+            if (playlist) {
+                playlist.name = document.getElementById('editPlaylistName').value;
+                playlist.description = document.getElementById('editPlaylistDesc').value;
+                
+                const checkboxes = document.querySelectorAll('#editPlaylistSongs input:checked');
+                playlist.songs = Array.from(checkboxes).map(cb => parseInt(cb.value));
+                
+                localStorage.setItem('soundbyte_playlists', JSON.stringify(playlists));
+                closeModal('editPlaylistModal');
+                loadPlaylists();
+                
+                showToast('Playlist updated successfully!');
+            }
+        }
+
+        function deletePlaylist(playlistId) {
+            if (confirm('Are you sure you want to delete this playlist?')) {
+                const playlists = JSON.parse(localStorage.getItem('soundbyte_playlists'));
+                const filtered = playlists.filter(p => p.id !== playlistId);
+                localStorage.setItem('soundbyte_playlists', JSON.stringify(filtered));
+                loadPlaylists();
+                
+                showToast('Playlist deleted');
+            }
+        }
+
+        function openAddToPlaylistModal(songId) {
+            currentSongId = songId;
+            const playlists = JSON.parse(localStorage.getItem('soundbyte_playlists'));
+            const userPlaylists = playlists.filter(p => p.createdBy === currentUser.id);
+            
+            const container = document.getElementById('playlistSelection');
+            
+            if (userPlaylists.length === 0) {
+                container.innerHTML = '<p style="color: var(--gray); text-align: center;">Create a playlist first!</p>';
+            } else {
+                container.innerHTML = userPlaylists.map(playlist => `
+                    <div style="margin-bottom: 10px;">
+                        <label style="display: flex; align-items: center; padding: 10px; background: #3E3E3E; border-radius: 10px; cursor: pointer;">
+                            <input type="radio" name="playlist" value="${playlist.id}" style="margin-right: 10px;">
+                            <span>${playlist.name} (${playlist.songs.length} songs)</span>
+                        </label>
+                    </div>
+                `).join('');
+            }
+            
+            document.getElementById('addToPlaylistModal').classList.add('active');
+        }
+
+        function addToPlaylist() {
+            const selectedPlaylist = document.querySelector('input[name="playlist"]:checked');
+            
+            if (!selectedPlaylist) {
+                showToast('Please select a playlist', 'error');
+                return;
+            }
+            
+            const playlistId = parseInt(selectedPlaylist.value);
+            const playlists = JSON.parse(localStorage.getItem('soundbyte_playlists'));
+            const playlist = playlists.find(p => p.id === playlistId);
+            
+            if (playlist && !playlist.songs.includes(currentSongId)) {
+                playlist.songs.push(currentSongId);
+                localStorage.setItem('soundbyte_playlists', JSON.stringify(playlists));
+                
+                closeModal('addToPlaylistModal');
+                showToast('Song added to playlist!');
+            } else {
+                showToast('Song already in playlist!', 'error');
+            }
+        }
+
+        // Upload Functions
+        function handleDragOver(event) {
+            event.preventDefault();
+            document.getElementById('uploadArea').classList.add('dragover');
+        }
+
+        function handleDragLeave(event) {
+            event.preventDefault();
+            document.getElementById('uploadArea').classList.remove('dragover');
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            document.getElementById('uploadArea').classList.remove('dragover');
+            
+            const files = event.dataTransfer.files;
+            handleFiles(files);
+        }
+
+        function handleFileUpload(event) {
+            const files = event.target.files;
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                if (file.size > 50 * 1024 * 1024) {
+                    showToast(`${file.name} is too large (max 50MB)`, 'error');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedFiles.push({
+                        id: Date.now() + Math.random(),
+                        name: file.name,
+                        size: file.size,
+                        data: e.target.result,
+                        progress: 0,
+                        status: 'uploading'
+                    });
+                    displayUploadedFiles();
+                    simulateUpload(uploadedFiles.length - 1);
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            document.getElementById('uploadForm').style.display = 'block';
+        }
+
+        function displayUploadedFiles() {
+            const container = document.getElementById('uploadedFiles');
+            container.innerHTML = uploadedFiles.map(file => `
+                <div class="file-item">
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+                    </div>
+                    <div class="file-progress">
+                        <div class="file-progress-bar" style="width: ${file.progress}%"></div>
+                    </div>
+                    <div class="file-status">${file.status}</div>
+                </div>
+            `).join('');
+        }
+
+        function simulateUpload(index) {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                uploadedFiles[index].progress = progress;
+                
+                if (progress >= 100) {
+                    uploadedFiles[index].status = 'completed';
+                    clearInterval(interval);
+                }
+                
+                displayUploadedFiles();
+            }, 200);
+        }
+
+        function publishUpload() {
+            const title = document.getElementById('uploadTitle').value;
+            const artist = document.getElementById('uploadArtist').value;
+            const genre = document.getElementById('uploadGenre').value;
+            
+            if (!title || !artist) {
+                showToast('Please fill in title and artist', 'error');
+                return;
+            }
+            
+            if (uploadedFiles.length === 0) {
+                showToast('Please upload a file first', 'error');
+                return;
+            }
+            
+            const songs = JSON.parse(localStorage.getItem('soundbyte_songs'));
+            const newSong = {
+                id: songs.length + 1,
+                title: title,
+                artist: artist,
+                genre: genre,
+                plays: 0,
+                uploadedBy: currentUser.id
+            };
+            
+            songs.push(newSong);
+            localStorage.setItem('soundbyte_songs', JSON.stringify(songs));
+            
+            showToast('Song published to SoundByte!');
+            
+            // Clear form
+            document.getElementById('uploadTitle').value = '';
+            document.getElementById('uploadArtist').value = '';
+            uploadedFiles = [];
+            displayUploadedFiles();
+            document.getElementById('uploadForm').style.display = 'none';
+            
+            // Refresh songs list
+            loadSongs();
+        }
+    </script>
+</body>
+</html>

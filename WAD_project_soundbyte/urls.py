@@ -21,8 +21,12 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('', include('soundbytes.urls')),
     path('admin/', admin.site.urls),
+    path('', include('soundbytes.urls')),
 ]
 
+<<<<<<< HEAD
 #to display images
+=======
+>>>>>>> 271c6a0 (Update profile page and related models/urls)
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
