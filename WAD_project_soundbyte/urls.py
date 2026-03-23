@@ -19,9 +19,11 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import include
 from soundbytes import views
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
-    path('', views.landing, name='landing'),
-    path('soundbytes/', include('soundbytes.urls'), name='soundbytes'),
+    path('', include('soundbytes.urls')),
     path('admin/', admin.site.urls),
 ]

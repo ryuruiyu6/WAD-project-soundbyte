@@ -10,4 +10,6 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('profile/', views.profile, name='profile'),
     path('signout/', views.signout, name='signout'),
+    path('upload/', views.upload_song),
+    path('search/', views.search_songs),
 ]

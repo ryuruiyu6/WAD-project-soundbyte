@@ -4,6 +4,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import HttpResponse
+from django.http import JsonResponse
+from .functions.file_manager import create_song
+from .functions.search_function import search, sort_songs
+from django.views.decorators.csrf import csrf_exempt
 from soundbytes.forms import UserForm,ProfileForm
 
 def landing(request):
@@ -68,3 +72,21 @@ def home(request):
 
 def profile(request):
     return None
+
+@csrf_exempt
+def upload_song(request):
+    if request.method == 'POST':
+        song = create_song(request.POST, request.FILES)
+        return JsonResponse({'status': 'success', 'song_id': song.id})
+
+    return JsonResponse({'error': 'Invalid request'})
+
+@csrf_exempt
+def search_songs(request):
+    query = request.GET.get('q', '')
+    sort_by = request.GET.get('sort', '')
+
+    songs = search(query)
+    songs = sort_songs(songs, sort_by)
+
+    return JsonResponse(list(songs.values()), safe=False)
