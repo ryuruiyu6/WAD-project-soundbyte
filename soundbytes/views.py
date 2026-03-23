@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from .functions.file_manager import create_song
 from .functions.search_function import search, sort_songs
 from django.views.decorators.csrf import csrf_exempt
-from soundbytes.forms import UserForm,ProfileForm
+from .forms import UserForm,ProfileForm
 
 def landing(request):
 

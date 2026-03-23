@@ -1,7 +1,7 @@
 from django.urls import path
 from soundbytes import views
 
-app_name = 'rango'
+app_name = 'soundbytes'
 
 urlpatterns = [
     path('', views.landing, name='landing'),
