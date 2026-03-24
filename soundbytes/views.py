@@ -1,9 +1,8 @@
 from django.shortcuts import render
-from django.http import JsonResponse, FileResponse
+from django.http import JsonResponse
 from .functions.file_manager import create_song
 from .functions.search_function import search, sort_songs
 from django.views.decorators.csrf import csrf_exempt
-from .models import Song
 
 @csrf_exempt
 def upload_song(request):
