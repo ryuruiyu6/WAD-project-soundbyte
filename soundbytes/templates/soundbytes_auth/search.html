@@ -1,10 +1,18 @@
-<form method="get">
-    <input type="text" name="q">
-    
+<form method="GET" action="/search-page/">
+    <input type="text" name="q" placeholder="Search...">
+
     <select name="genre">
         <option value="">All</option>
-        <option value="Pop">Pop</option>
-        <option value="Rock">Rock</option>
+        {% for genre in genres %}
+            <option value="{{ genre.name }}">{{ genre.name }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="sort">
+        <option value="">Default</option>
+        <option value="views">Most Viewed</option>
+        <option value="downloads">Most Downloaded</option>
+        <option value="new">Newest</option>
     </select>
 
     <button type="submit">Search</button>
@@ -16,8 +24,18 @@
     <div>
         <h3>{{ song.title }}</h3>
         <p>{{ song.artist }}</p>
+
+        <p>
+            Genres:
+            {% for genre in song.genres.all %}
+                {{ genre.name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </p>
+
+        <p>Tags: {{ song.tags }}</p>
+
+        <audio controls>
+            <source src="{{ song.audio_file.url }}" type="audio/mpeg">
+        </audio>
     </div>
-    <audio controls>
-        <source src="/stream/{{ song.id }}/" type="audio/mpeg">
-    </audio>
 {% endfor %}
