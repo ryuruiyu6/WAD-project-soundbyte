@@ -65,3 +65,14 @@ def album_page(request, album_id):
     album = Album.objects.get(id=album_id)
     songs = Song.objects.filter(album=album)
     return render(request, 'soundbytes_auth/album.html', {'album': album,'songs': songs})
+
+def trending_page(request):
+    songs = Song.objects.all()
+    for song in songs:
+        song.score = (
+            song.like_count * 3 +
+            song.view_count * 2 +
+            song.download_count * 4
+        )
+    songs = sorted(songs, key=lambda x: x.score, reverse=True)[:10]
+    return render(request, 'soundbytes_auth/trending.html', {'songs': songs})
