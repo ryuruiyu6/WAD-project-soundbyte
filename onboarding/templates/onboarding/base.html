@@ -1,0 +1,23 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+    <title>{% block title %} unconfigured {% endblock %}</title>
+</head>
+<body>
+    <div id="topBar" style="display: flex; height: 10%;">
+        <img src="{% static 'soundbyte_logo.png' %}" alt="soundbytes logo" class="soundbytesLogo"/>
+        <h1>soundbytes</h1>
+        <h3>Team 11C's WAd group project</h3>
+    </div>
+
+    <main style="height: 90%;">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

@@ -1,3 +1,60 @@
 html {
     font-family: 'Courier New', Courier, monospace;
 }
+
+body {
+    background-color: #333333;
+    color: white;
+    height: 100vh;
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+main {
+    height: 90%;
+}
+
+#topBar {
+    height: 10%;
+    display: flex;
+}
+
+.soundbytesLogo {
+    height: 100%;
+}
+
+.basicButton {
+    text-decoration: none;
+    border: 4px solid #000000;
+    background-color: #121212;
+    padding: 6px;
+    font-weight: 700;
+    color: white;
+}
+
+.centerDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#navBar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #111111;
+}
+
+#navBar a {
+    display: block;
+    background-color: #111111;
+    text-align: center;
+    text-decoration: none;
+}
+
+#navBar a:hover {
+    display: block;
+    background-color: #323232;
+}

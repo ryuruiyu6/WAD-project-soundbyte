@@ -14,7 +14,7 @@ def landing(request):
     context_dict={}
     context_dict['boldmessage']='hi'
 
-    response = render(request, 'soundbytes_base/landing.html', context = context_dict)
+    response = render(request, 'soundbytes/landing.html', context = context_dict)
     return response
 
 def signup(request):
@@ -38,7 +38,7 @@ def signup(request):
         user_form = UserForm()
         profile_form = ProfileForm()
     return render(request,
-                  'soundbytes_base/signup.html',
+                  'soundbytes/signup.html',
                   context = {'user_form':user_form,
                              'profile_form':profile_form,
                              'registered':registered})
@@ -57,7 +57,7 @@ def signin(request):
         else:
             return HttpResponse("Invalid sign-in details.")
     else:
-        return render(request,'soundbytes_base/signin.html')
+        return render(request,'soundbytes/signin.html')
     
 #Auth only below
     
