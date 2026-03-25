@@ -1,0 +1,48 @@
+<form method="GET" action="/search-page/">
+    <input type="text" name="q" placeholder="Search...">
+
+    <select name="genre">
+        <option value="">All</option>
+        {% for genre in genres %}
+            <option value="{{ genre.name }}">{{ genre.name }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="sort">
+        <option value="">Default</option>
+        <option value="views">Most Viewed</option>
+        <option value="downloads">Most Downloaded</option>
+        <option value="likes">Most Liked</option>
+        <option value="new">Newest</option>
+    </select>
+
+    <button type="submit">Search</button>
+</form>
+
+<h2>Results:</h2>
+
+{% for song in songs %}
+    <div>
+        <h3>{{ song.title }}</h3>
+        <p>{{ song.artist }}</p>
+        <p>
+            Album:
+            <a href="{% url 'album_page' song.album.id %}">
+                {{ song.album.title }}
+            </a>
+        </p>
+
+        <p>
+            Genres:
+            {% for genre in song.genres.all %}
+                {{ genre.name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </p>
+
+        <p>Tags: {{ song.tags }}</p>
+
+        <audio controls>
+            <source src="{% url 'stream_song' song.id %}" type="audio/mpeg">
+        </audio>
+    </div>
+{% endfor %}
