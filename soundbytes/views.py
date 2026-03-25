@@ -51,7 +51,7 @@ def signin(request):
         if user:
             if user.is_active:
                 login(request,user)
-                return redirect(reverse('soundbytes:landing'))
+                return redirect(reverse('soundbytes:home'))
             else:
                 return HttpResponse("Your Soundbytes account is diabled")
         else:
@@ -66,11 +66,13 @@ def signout(request):
     logout(request)
     return redirect(reverse('rango:index'))
 
+@login_required
 def home(request):
-    return None
+    return render(request,'soundbytes_auth/home.html')
 
+@login_required
 def profile(request):
-    return None
+    return render(request,'soundbytes_auth/profile.html')
 
 
 @csrf_exempt
