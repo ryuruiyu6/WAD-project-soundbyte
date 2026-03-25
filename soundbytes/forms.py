@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from soundbytes.models import Profile
 
 class UserForm(forms.ModelForm):
-    passwords = forms.CharField(widget=forms.PasswordInput())
+    password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
         model = User
