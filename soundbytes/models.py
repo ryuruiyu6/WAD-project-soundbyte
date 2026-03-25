@@ -14,12 +14,18 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
+class Genre(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
 class Song(models.Model):
     #song data
     title = models.CharField(max_length = 50)
     artist = models.CharField(max_length = 50)
-    genre = models.CharField(max_length = 30)
-    tags = models.TextField(blank = True)
+    genres = models.ManyToManyField(Genre)
+    tags = models.TextField(max_length=50, blank = True)
     #files!!!
     audio_file = models.FileField(upload_to = 'songs/')
     cover_image = models.ImageField(upload_to = 'covers/', null = True, blank = True)

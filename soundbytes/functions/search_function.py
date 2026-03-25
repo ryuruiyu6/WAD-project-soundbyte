@@ -2,12 +2,31 @@ from django.db.models import Q
 from ..models import Song
 
 def search(query):
-    return Song.objects.filter(
-        Q(title__icontains=query) |
-        Q(artist__icontains=query) |
-        Q(genre__icontains=query) |
-        Q(tags__icontains=query)
-    )
+    songs = Song.objects.all()
+
+    if query:
+        words = query.split()
+
+        query_filter = Q()
+
+        for word in words:
+            query_filter &= (
+                Q(title__icontains=word) |
+                Q(artist__icontains=word) |
+                Q(genres__name__icontains=word) |
+                Q(tags__icontains=word)
+            )
+
+        songs = songs.filter(query_filter)
+
+    return songs.distinct()
+
+#    return Song.objects.filter(
+#        Q(title__icontains=query) |
+#        Q(artist__icontains=query) |
+#        Q(genres__name__icontains=query) |
+#        Q(tags__icontains=query)
+#    ).distinct()
 
 def sort_songs(songs, sort_by):
     if sort_by == 'views':
