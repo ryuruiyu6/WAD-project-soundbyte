@@ -1,0 +1,10 @@
+<h1>Trending Songs</h1>
+
+{% for song in songs %}
+    <div>
+        <p>{{ song.title }} - {{ song.artist }}</p>
+        <audio controls>
+            <source src="{% url 'stream_song' song.id %}" type="audio/mpeg">
+        </audio>
+    </div>
+{% endfor %}

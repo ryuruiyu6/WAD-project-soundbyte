@@ -7,12 +7,16 @@ from .models import Song, Genre, Album
 
 @csrf_exempt
 def upload_song(request):
+    #must have album
     if request.method == 'POST':
         album_id = request.POST.get('album')
         if not album_id:
+            #if no album return error to prevent crash
             return JsonResponse({'error': 'You must select an album'})
         album = Album.objects.get(id=album_id)
+        #create song!!
         song = create_song(request.POST, request.FILES, album)
+        #assign genres and add
         genre_ids = request.POST.getlist('genres')
         song.genres.set(genre_ids)
         return redirect('/search-page/')
@@ -22,6 +26,7 @@ def upload_song(request):
 def search_songs(request):
     query = request.GET.get('q', '')
     sort_by = request.GET.get('sort', '')
+    #return songs that meet the search criteria
     songs = search(query)
     songs = sort_songs(songs, sort_by)
     return JsonResponse(list(songs.values()), safe=False)
@@ -35,6 +40,7 @@ def search_page(request):
     query = request.GET.get('q', '')
     genre = request.GET.get('genre')
     songs = search(query)
+    #filter by genre
     if genre:
         songs = songs.filter(genres__name=genre)
     genres = Genre.objects.all()
@@ -44,8 +50,10 @@ def search_page(request):
 
 def stream_song(request, song_id):
     song = Song.objects.get(id=song_id)
+    #increase view count on stream
     song.view_count += 1
     song.save()
+    #play song
     return FileResponse(song.audio_file.open(), content_type='audio/mpeg')
 
 def create_album(request):
@@ -53,6 +61,7 @@ def create_album(request):
         title = request.POST.get('title')
         artist = request.POST.get('artist')
         cover = request.FILES.get('cover_image')
+        #create album with data above got from page
         Album.objects.create(
             title=title,
             artist=artist,
@@ -62,6 +71,21 @@ def create_album(request):
     return render(request, 'soundbytes_auth/create_album.html')
 
 def album_page(request, album_id):
+    #displays songs in that album
     album = Album.objects.get(id=album_id)
     songs = Song.objects.filter(album=album)
     return render(request, 'soundbytes_auth/album.html', {'album': album,'songs': songs})
+
+def trending_page(request):
+    songs = Song.objects.all()
+    for song in songs:
+        #assigns each song a value based on likes, views and
+        #downloads to calculate how popular it is
+        song.score = (
+            song.like_count * 3 +
+            song.view_count * 2 +
+            song.download_count * 4
+        )
+    #displays top 10 songs
+    songs = sorted(songs, key=lambda x: x.score, reverse=True)[:10]
+    return render(request, 'soundbytes_auth/trending.html', {'songs': songs})
