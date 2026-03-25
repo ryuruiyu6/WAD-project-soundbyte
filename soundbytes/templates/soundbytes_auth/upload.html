@@ -1,0 +1,27 @@
+
+
+<form action="/upload/" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <input type="text" name="title" placeholder="Title"><br>
+    <input type="text" name="artist" placeholder="Artist"><br>
+
+    <select name="album">
+        <option value="">Select Album</option>
+        {% for album in albums %}
+            <option value="{{ album.id }}">{{ album.title }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="genres" multiple>
+        {% for genre in genres %}
+            <option value="{{ genre.id }}">{{ genre.name }}</option>
+        {% endfor %}
+    </select>
+    
+    <input type="text" name="tags" placeholder="Tags"><br>
+
+    <input type="file" name="audio_file"><br>
+
+    <button type="submit">Upload</button>
+</form>

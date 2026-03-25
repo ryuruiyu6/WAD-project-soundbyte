@@ -27,3 +27,7 @@ urlpatterns = [
     path('', include('soundbytes.urls')),
     path('admin/', admin.site.urls),
 ]
+
+#to display images
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
