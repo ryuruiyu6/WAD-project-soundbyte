@@ -17,16 +17,16 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from . import views
 
 urlpatterns = [
-    path('', include('soundbytes.urls')),
     path('admin/', admin.site.urls),
     path('', include('soundbytes.urls')),
+    path('profile/<str:username>/', views.profile_view, name='profile'),
+    path('profile/<str:username>/follow/', views.follow_user, name='follow_user'),
+    path('profile/edit/', views.profile_edit, name='profile_edit'),
+    path('analytics/<str:username>/', views.analytics_view, name='analytics'),
 ]
 
-<<<<<<< HEAD
-#to display images
-=======
->>>>>>> 271c6a0 (Update profile page and related models/urls)
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
