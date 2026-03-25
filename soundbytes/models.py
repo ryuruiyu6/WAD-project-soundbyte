@@ -1,6 +1,7 @@
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
+from django.conf import settings
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -8,11 +9,19 @@ class Profile(models.Model):
     slug = models.SlugField(unique=True)
 
     def save(self,*args,**kwargs):
-        self.slug=slugify(self.user.username)
+        if not self.slug:
+            self.slug=slugify(self.user.username)
         super().save(*args,**kwargs)
 
     def __str__(self):
         return self.user.username
+
+class Playlist(models.Model):
+    title = models.CharField(max_length=255)
+    songs = models.ManyToManyField('Song')
+
+    def __str__(self):
+        return self.title
 
 class Genre(models.Model):
     name = models.CharField(max_length=50)
