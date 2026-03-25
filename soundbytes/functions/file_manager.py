@@ -1,6 +1,6 @@
-from ..models import Song
+from ..models import Song, Album
 
-def create_song(data, files):
+def create_song(data, files, album):
     raw_tags = data.get('tags', '')
     #separate tags
     tags = ",".join([t.strip().lower() for t in raw_tags.split(",") if t.strip()])
@@ -9,6 +9,6 @@ def create_song(data, files):
         artist=data.get('artist'),
         tags=tags,
         audio_file=files.get('audio_file'),
-        cover_image=files.get('cover_image')
+        album=album,
     )
     

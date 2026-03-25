@@ -33,6 +33,8 @@ def sort_songs(songs, sort_by):
         return songs.order_by('-view_count')
     elif sort_by == 'downloads':
         return songs.order_by('-download_count')
+    elif sort_by == 'likes':
+        return songs.order_by('-like_count')
     elif sort_by == 'new':
         return songs.order_by('-upload_date')
     return songs

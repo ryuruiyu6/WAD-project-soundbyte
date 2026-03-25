@@ -1,0 +1,18 @@
+<h2>{{ album.title }}</h2>
+<p>{{ album.artist }}</p>
+
+{% if album.cover_image %}
+    <img src="{{ album.cover_image.url }}" width="200">
+{% endif %}
+
+<h3>Songs:</h3>
+
+{% for song in songs %}
+    <div>
+        <p>{{ song.title }}</p>
+
+        <audio controls>
+            <source src="{% url 'stream_song' song.id %}" type="audio/mpeg">
+        </audio>
+    </div>
+{% endfor %}

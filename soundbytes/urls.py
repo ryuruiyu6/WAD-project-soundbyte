@@ -7,4 +7,7 @@ urlpatterns = [
     path('upload-page/', views.upload_page),
     path('search-page/', views.search_page),
     path('stream/<int:song_id>/', views.stream_song),
+    path('create-album/', views.create_album),
+    path('album/<int:album_id>/', views.album_page, name='album_page'),
+    path('stream/<int:song_id>/', views.stream_song, name='stream_song'),
 ] 

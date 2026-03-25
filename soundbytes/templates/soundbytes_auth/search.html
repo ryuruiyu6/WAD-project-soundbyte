@@ -12,6 +12,7 @@
         <option value="">Default</option>
         <option value="views">Most Viewed</option>
         <option value="downloads">Most Downloaded</option>
+        <option value="likes">Most Liked</option>
         <option value="new">Newest</option>
     </select>
 
@@ -24,6 +25,12 @@
     <div>
         <h3>{{ song.title }}</h3>
         <p>{{ song.artist }}</p>
+        <p>
+            Album:
+            <a href="{% url 'album_page' song.album.id %}">
+                {{ song.album.title }}
+            </a>
+        </p>
 
         <p>
             Genres:
@@ -35,7 +42,7 @@
         <p>Tags: {{ song.tags }}</p>
 
         <audio controls>
-            <source src="{{ song.audio_file.url }}" type="audio/mpeg">
+            <source src="{% url 'stream_song' song.id %}" type="audio/mpeg">
         </audio>
     </div>
 {% endfor %}

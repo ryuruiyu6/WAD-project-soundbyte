@@ -3,12 +3,16 @@ from django.http import JsonResponse, FileResponse
 from .functions.file_manager import create_song
 from .functions.search_function import search, sort_songs
 from django.views.decorators.csrf import csrf_exempt
-from .models import Song, Genre
+from .models import Song, Genre, Album
 
 @csrf_exempt
 def upload_song(request):
     if request.method == 'POST':
-        song = create_song(request.POST, request.FILES)
+        album_id = request.POST.get('album')
+        if not album_id:
+            return JsonResponse({'error': 'You must select an album'})
+        album = Album.objects.get(id=album_id)
+        song = create_song(request.POST, request.FILES, album)
         genre_ids = request.POST.getlist('genres')
         song.genres.set(genre_ids)
         return redirect('/search-page/')
@@ -24,7 +28,8 @@ def search_songs(request):
 
 def upload_page(request):
     genres = Genre.objects.all()
-    return render(request, 'soundbytes_auth/upload.html', {'genres': genres})
+    albums = Album.objects.all()
+    return render(request, 'soundbytes_auth/upload.html', {'genres': genres, 'albums': albums})
 
 def search_page(request):
     query = request.GET.get('q', '')
@@ -42,3 +47,21 @@ def stream_song(request, song_id):
     song.view_count += 1
     song.save()
     return FileResponse(song.audio_file.open(), content_type='audio/mpeg')
+
+def create_album(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        artist = request.POST.get('artist')
+        cover = request.FILES.get('cover_image')
+        Album.objects.create(
+            title=title,
+            artist=artist,
+            cover_image=cover
+        )
+        return redirect('/upload-page/')
+    return render(request, 'soundbytes_auth/create_album.html')
+
+def album_page(request, album_id):
+    album = Album.objects.get(id=album_id)
+    songs = Song.objects.filter(album=album)
+    return render(request, 'soundbytes_auth/album.html', {'album': album,'songs': songs})
