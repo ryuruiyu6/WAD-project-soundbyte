@@ -3,7 +3,7 @@ from . import views
 
 #all urls i used, please do not remove anything from this list!!
 urlpatterns = [
-    path('upload/', views.upload_song),
+    path('upload/', views.upload),
     path('search/', views.search_songs),
     path('upload-page/', views.upload_page),
     path('search-page/', views.search_page),
