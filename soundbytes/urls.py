@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 
+#all urls i used, please do not remove anything from this list!!
 urlpatterns = [
     path('upload/', views.upload_song),
     path('search/', views.search_songs),
