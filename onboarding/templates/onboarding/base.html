@@ -10,10 +10,9 @@
     <title>{% block title %} unconfigured {% endblock %}</title>
 </head>
 <body>
-    <div id="topBar" style="display: flex; height: 10%;">
+    <div id="topBar">
         <img src="{% static 'soundbyte_logo.png' %}" alt="soundbytes logo" class="soundbytesLogo"/>
-        <h1>soundbytes</h1>
-        <h3>Team 11C's WAd group project</h3>
+        <h1><a href = "{% url 'landing' %}">soundbytes</a></h1>
     </div>
 
     <main style="height: 90%;">
