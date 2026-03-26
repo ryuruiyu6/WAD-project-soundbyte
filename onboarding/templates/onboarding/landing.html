@@ -1,17 +1,66 @@
-{% extends "onboarding/base.html" %}
-
-{% load static %}
-
-{% block title %}soundbytes{% endblock %}
-
-{% block content %}
-    <div class="centerDiv" style="height: 100%;">
-        <img src="{% static 'soundbyte_logo.png' %}" alt="soundbytes logo" style="height: 30%;" />
-
-        <br />
-
-        <a href="{% url 'register' %}" class="basicButton">Make an account</a>
-        <br />
-        <a href="{% url 'sign-in' %}" class="basicButton">Sign in</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoundByte - Music Streaming Platform</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            text-align: center;
+            color: white;
+            padding: 2rem;
+        }
+        h1 { font-size: 4rem; margin-bottom: 1rem; }
+        .buttons { display: flex; gap: 1rem; justify-content: center; margin: 2rem 0; }
+        .btn {
+            background: white;
+            color: #667eea;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+        .feature {
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+        }
+        @media (max-width: 768px) { h1 { font-size: 2rem; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 SoundByte</h1>
+        <p>Discover, stream, and share amazing music with the world</p>
+        <div class="buttons">
+            <a href="/signup/" class="btn">Get Started</a>
+            <a href="/signin/" class="btn btn-outline">Sign In</a>
+        </div>
+        <div class="features">
+            <div class="feature"><div class="feature-icon">🎧</div><h3>Stream Music</h3></div>
+            <div class="feature"><div class="feature-icon">🎤</div><h3>Upload Your Music</h3></div>
+            <div class="feature"><div class="feature-icon">👥</div><h3>Follow Artists</h3></div>
+        </div>
     </div>
-{% endblock %}
+</body>
+</html>

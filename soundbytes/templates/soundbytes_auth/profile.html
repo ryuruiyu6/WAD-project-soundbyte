@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -16,15 +17,45 @@
                         <img src="{{ profile.picture.url }}" alt="{{ profile_user.username }}">
                     {% else %}
                         {% if profile.is_artist %}🎤{% else %}👤{% endif %}
+=======
+{% extends 'soundbytes_base/base.html' %}
+{% load static %}
+
+{% block title %}Profile - {{ profile_user.username }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-info">
+            <div class="profile-avatar">
+                {% if profile.picture %}
+                    <img src="{{ profile.picture.url }}" alt="{{ profile_user.username }}">
+                {% else %}
+                    {% if profile.is_artist %}🎤{% else %}👤{% endif %}
+                {% endif %}
+            </div>
+            <div class="profile-details">
+                <div class="profile-name">
+                    {{ profile.display_name|default:profile_user.username }}
+                    {% if profile.is_artist %}
+                        <span class="verified-badge">✓ Verified Artist</span>
+>>>>>>> profile
                     {% endif %}
                 </div>
-                <div class="profile-details">
-                    <div class="profile-name">
-                        {{ profile.display_name|default:profile_user.username }}
-                        {% if profile.is_artist %}
-                            <span style="font-size: 0.8rem;">✓ Verified Artist</span>
-                        {% endif %}
+                <div class="profile-username">@{{ profile_user.username }}</div>
+                {% if profile.bio %}
+                    <div class="profile-bio">{{ profile.bio }}</div>
+                {% endif %}
+                <div class="profile-stats">
+                    <div class="stat">
+                        <div class="stat-number" id="follower-count">{{ profile.follower_count|default:0 }}</div>
+                        <div class="stat-label">Followers</div>
                     </div>
+<<<<<<< HEAD
                     <div class="profile-username">@{{ profile_user.username }}</div>
                     {% if profile.bio %}
                         <div class="profile-bio">{{ profile.bio }}</div>
@@ -146,3 +177,73 @@
     <script src="{% static 'js/profile.js' %}"></script>
 </body>
 </html>
+=======
+                    <div class="stat">
+                        <div class="stat-number" id="following-count">{{ profile.following_count|default:0 }}</div>
+                        <div class="stat-label">Following</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number" id="profile-views">{{ profile.profile_views|default:0 }}</div>
+                        <div class="stat-label">Profile Views</div>
+                    </div>
+                </div>
+            </div>
+            <div class="profile-actions">
+                {% if is_own_profile %}
+                    <button id="edit-profile-btn" class="action-btn">✏️ Edit Profile</button>
+                {% else %}
+                    <button id="follow-btn" class="action-btn {% if is_following %}following{% endif %}" data-username="{{ profile_user.username }}">
+                        {% if is_following %}Following{% else %}Follow{% endif %}
+                    </button>
+                {% endif %}
+                <button id="like-page-btn" class="action-btn">❤️ <span id="page-likes-count">0</span> Likes</button>
+                <button id="share-profile-btn" class="action-btn">📤 Share</button>
+                <button id="dark-mode-toggle" class="action-btn">🌙 Dark Mode</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-content">
+        <!-- Search Section -->
+        <div class="search-container">
+            <input type="text" id="profile-search" placeholder="🔍 Search songs on this profile..." class="search-input">
+            <div id="search-results" style="display: none;"></div>
+        </div>
+
+        <!-- Color Picker -->
+        <div class="color-picker-container">
+            <label>🎨 Theme Color: </label>
+            <input type="color" id="color-picker" value="#667eea">
+        </div>
+
+        <!-- Recommendations Section -->
+        <h2 class="section-title">🎧 Recommended For You</h2>
+        <div id="recommendations-list" class="recommendations-list"></div>
+
+        <!-- Activity Section -->
+        <h2 class="section-title">📝 Recent Activity</h2>
+        <div id="activity-list" class="activity-list"></div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div id="edit-profile-modal" class="modal">
+    <div class="modal-content">
+        <h3>Edit Profile</h3>
+        <form id="edit-profile-form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="text" name="display_name" placeholder="Display Name" value="{{ profile.display_name|default:'' }}">
+            <textarea name="bio" placeholder="Bio" rows="4">{{ profile.bio|default:'' }}</textarea>
+            <input type="file" name="picture" accept="image/*">
+            <button type="submit" class="action-btn">Save Changes</button>
+            <button type="button" class="close-modal action-btn" style="background: #999;">Cancel</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'js/profile.js' %}"></script>
+{% endblock %}
+>>>>>>> profile

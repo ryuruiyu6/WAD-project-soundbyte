@@ -38,11 +38,10 @@ def signup(request):
         user_form = UserForm()
         profile_form = ProfileForm()
     return render(request,
-                  'soundbytes/signup.html',
+                  'onboarding/register.html',  # Changed to use onboarding template
                   context = {'user_form':user_form,
                              'profile_form':profile_form,
                              'registered':registered})
-
 def signin(request):
     if request.method == 'POST':
         username = request.POST.get('username')
