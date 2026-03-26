@@ -1,0 +1,216 @@
+[1mdiff --cc WAD_project_soundbyte/urls.py[m
+[1mindex 9491455,04d6e3f..0000000[m
+[1m--- a/WAD_project_soundbyte/urls.py[m
+[1m+++ b/WAD_project_soundbyte/urls.py[m
+[36m@@@ -13,20 -13,13 +13,27 @@@[m [mIncluding another URLcon[m
+      1. Import the include() function: from django.urls import include, path[m
+      2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))[m
+  """[m
+[31m- from django.contrib import admin[m
+[31m- from django.urls import path, include[m
+[31m- from django.conf import settings[m
+[31m- from django.conf.urls.static import static[m
+[32m+ from django.urls import path[m
+[32m+ from . import views[m
+  [m
+  urlpatterns = [[m
+[32m++<<<<<<< HEAD[m
+[32m +    path('', include('soundbytes.urls')),[m
+[32m +    path('admin/', admin.site.urls),[m
+[32m +    path('', include('soundbytes.urls')),[m
+[32m +][m
+[32m +[m
+[32m +<<<<<<< HEAD[m
+[32m +#to display images[m
+[32m +=======[m
+[32m +>>>>>>> 271c6a0 (Update profile page and related models/urls)[m
+[32m +if settings.DEBUG:[m
+[31m-     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)[m
+[32m++    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)[m
+[32m++=======[m
+[32m+     path('profile/<str:username>/', views.profile_view, name='profile'),[m
+[32m+     path('profile/<str:username>/follow/', views.follow_user, name='follow_user'),[m
+[32m+     path('profile/edit/', views.profile_edit, name='profile_edit'),[m
+[32m+     # Add analytics URL if needed[m
+[32m+     path('analytics/<str:username>/', views.analytics_view, name='analytics'),[m
+[31m -][m
+[32m++][m
+[32m++>>>>>>> f23683a (Add analytics dashboard and updates)[m
+[1mdiff --cc templates/soundbytes_auth/profile.html[m
+[1mindex 1db1fb8,bc81221..0000000[m
+[1m--- a/templates/soundbytes_auth/profile.html[m
+[1m+++ b/templates/soundbytes_auth/profile.html[m
+[36m@@@ -2,266 -2,597 +2,860 @@@[m
+  <html lang="en">[m
+  <head>[m
+      <meta charset="UTF-8">[m
+[32m++<<<<<<< HEAD[m
+[32m +    <meta name="viewport" content="width=device-width, initial-scale=1.0">[m
+[32m +    <title>Profile - {{ profile_user.username }}</title>[m
+[32m +    <style>[m
+[32m +        /* Profile styles */[m
+[32m +        .profile-container {[m
+[32m +            max-width: 1200px;[m
+[32m +            margin: 2rem auto;[m
+[32m +            padding: 0 1rem;[m
+[32m +        }[m
+[32m +        [m
+[32m +        .profile-header {[m
+[32m +            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);[m
+[32m +            border-radius: 1rem;[m
+[32m +            padding: 2rem;[m
+[32m +            color: white;[m
+[32m +            margin-bottom: 2rem;[m
+[32m +        }[m
+[32m +        [m
+[32m +        .profile-info {[m
+[32m +            display: flex;[m
+[32m +            align-items: center;[m
+[32m +            gap: 2rem;[m
+[32m +            flex-wrap: wrap;[m
+[32m +        }[m
+[32m +        [m
+[32m +        .profile-avatar {[m
+[32m +            width: 120px;[m
+[32m +            height: 120px;[m
+[32m +            border-radius: 50%;[m
+[32m +            background: white;[m
+[32m +            display: flex;[m
+[32m +            align-items: center;[m
+[32m +            justify-content: center;[m
+[32m +            font-size: 3rem;[m
+[32m++=======[m
+[32m+     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">[m
+[32m+     <title>Harmony Flow — Artist Analytics Dashboard</title>[m
+[32m+     <style>[m
+[32m+         * {[m
+[32m+             margin: 0;[m
+[32m+             padding: 0;[m
+[32m+             box-sizing: border-box;[m
+[32m+         }[m
+[32m+ [m
+[32m+         body {[m
+[32m+             background: radial-gradient(circle at 10% 30%, #0a0f1e, #06080f);[m
+[32m+             font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;[m
+[32m+             padding: 2rem 1.5rem;[m
+[32m+             min-height: 100vh;[m
+[32m+         }[m
+[32m+ [m
+[32m+         /* refined container */[m
+[32m+         .dashboard {[m
+[32m+             max-width: 1400px;[m
+[32m+             margin: 0 auto;[m
+[32m+             background: rgba(18, 22, 40, 0.75);[m
+[32m+             backdrop-filter: blur(2px);[m
+[32m+             border-radius: 2rem;[m
+[32m+             box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);[m
+[32m++>>>>>>> f23683a (Add analytics dashboard and updates)[m
+              overflow: hidden;[m
+[32m+             border: 1px solid rgba(255, 255, 255, 0.08);[m
+          }[m
+[32m++<<<<<<< HEAD[m
+[32m +        [m
+[32m +        .profile-avatar img {[m
+[32m +            width: 100%;[m
+[32m +            height: 100%;[m
+[32m +            object-fit: cover;[m
+[32m +        }[m
+[32m +        [m
+[32m +        .profile-details {[m
+[32m +            flex: 1;[m
+[32m +        }[m
+[32m +        [m
+[32m +        .profile-name {[m
+[32m +            font-size: 2rem;[m
+[32m +            font-weight: bold;[m
+[32m +            margin-bottom: 0.5rem;[m
+[32m +        }[m
+[32m +        [m
+[32m +        .profile-username {[m
+[32m +            font-size: 1.1rem;[m
+[32m +            opacity: 0.9;[m
+[32m +            margin-bottom: 1rem;[m
+[32m +        }[m
+[32m +        [m
+[32m +        .profile-bio {[m
+[32m +            margin: 1rem 0;[m
+[32m +            line-height: 1.5;[m
+[32m +        }[m
+[32m +        [m
+[32m +        .profile-stats {[m
+[32m +            display: flex;[m
+[32m +            gap: 2rem;[m
+[32m +            margin-top: 1rem;[m
+[32m +        }[m
+[32m +        [m
+[32m +        .stat {[m
+[32m +            text-align: center;[m
+[32m +        }[m
+[32m +        [m
+[32m +        .stat-number {[m
+[32m +            font-size: 1.5rem;[m
+[32m +            font-weight: bold;[m
+[32m +        }[m
+[32m +        [m
+[32m +        .stat-label {[m
+[32m +            font-size: 0.8rem;[m
+[32m +            opacity: 0.8;[m
+[32m +        }[m
+[32m +        [m
+[32m +        .edit-profile-btn, .follow-btn {[m
+[32m +            background: white;[m
+[32m +            color: #667eea;[m
+[32m +            border: none;[m
+[32m +            padding: 0.5rem 1.5rem;[m
+[32m +            border-radius: 2rem;[m
+[32m +            font-weight: 600;[m
+[32m +            cursor: pointer;[m
+[32m +            transition: all 0.3s;[m
+[32m +        }[m
+[32m +        [m
+[32m +        .follow-btn {[m
+[32m +            background: rgba(255, 255, 255, 0.2);[m
+[32m +            color: white;[m
+[32m +        }[m
+[32m +        [m
+[32m +        .follow-btn.following {[m
+[32m +            background: white;[m
+[32m +            color: #667eea;[m
+[32m +        }[m
+[32m +        [m
+[32m +        .profile-content {[m
+[32m +            background: white;[m
+[32m +            border-radius: 1rem;[m
+[32m +            padding: 2rem;[m
+[32m +            box-shadow: 0 2px 10px rgba(0,0,0,0.1);[m
+[32m +        }[m
+[32m +        [m
+[32m +        .section-title {[m
+[32m +            font-size: 1.5rem;[m
+[32m +            margin-bottom: 1rem;[m
+[32m +            color: #333;[m
+[32m +        }[m
+[32m +        [m
+[32m +        /* Analytics styles for artists */[m
+[32m +        .analytics-grid {[m
+[32m +            display: grid;[m
+[32m +            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));[m
+[32m +            gap: 1rem;[m
+[32m +            margin-top: 1rem;[m
+[32m +        }[m
+[32m +        [m
+[32m +        .analytics-card {[m
+[32m +            background: #f8f9fa;[m
+[32m +            padding: 1rem;[m
+[32m +            border-radius: 0.5rem;[m
+[32m +            text-align: center;[m
+[32m +        }[m
+[32m +        [m
+[32m +        .analytics-number {[m
+[32m +            font-size: 2rem;[m
+[32m +            font-weight: bold;[m
+[32m +            color: #667eea;[m
+[32m++=======[m
+[32m+ [m
+[32m+         /* artist hero section — more dynamic */[m
+[32m+         .he

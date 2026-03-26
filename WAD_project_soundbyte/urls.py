@@ -1,33 +1,27 @@
-"""WAD_project_soundbyte URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/2.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-from django.conf import settings
-from django.conf.urls.static import static
-from django.contrib import admin
-from django.urls import path
-from django.urls import include
-from soundbytes import views
-from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
+﻿from django.urls import path, include
+from soundbytes import views as soundbytes_views
+from onboarding import views as onboarding_views
 
 urlpatterns = [
-    path('', include('onboarding.urls')),
-    path('admin/', admin.site.urls),
+    # Onboarding routes (landing pages)
+    path('', onboarding_views.landing, name='landing'),
+    path('register/', onboarding_views.register, name='register'),
+    path('sign-in/', onboarding_views.sign_in, name='sign_in'),
+    
+    # Soundbytes authentication routes
+    path('signup/', soundbytes_views.signup, name='signup'),
+    path('signin/', soundbytes_views.signin, name='signin'),
+    path('signout/', soundbytes_views.signout, name='signout'),
+    
+    # Main app routes
+    path('home/', soundbytes_views.home, name='home'),
+    path('profile/', soundbytes_views.profile, name='profile'),
+    path('upload/', soundbytes_views.upload),
+    path('search/', soundbytes_views.search_songs),
+    path('upload-page/', soundbytes_views.upload_page),
+    path('search-page/', soundbytes_views.search_page),
+    path('stream/<int:song_id>/', soundbytes_views.stream_song, name='stream_song'),
+    path('create-album/', soundbytes_views.create_album),
+    path('album/<int:album_id>/', soundbytes_views.album_page, name='album_page'),
+    path('trending/', soundbytes_views.trending_page, name='trending'),
 ]
-
-#to display images
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
