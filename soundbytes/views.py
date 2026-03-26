@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .functions.file_manager import create_song
 from .functions.search_function import search, sort_songs
 from .forms import UserForm,ProfileForm
-from .models import Song, Genre, Album, User, Profile
+from .models import Song, Genre, Album, User, Profile, Post
 
 def landing(request):
 
