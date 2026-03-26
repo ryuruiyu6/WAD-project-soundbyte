@@ -1,33 +1,13 @@
-<<<<<<< HEAD
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - {{ profile_user.username }} | SoundByte</title>
-    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
-</head>
-<body>
-    <div class="profile-container">
-        <div class="profile-header">
-            <div class="profile-info">
-                <div class="profile-avatar">
-                    {% if profile.picture %}
-                        <img src="{{ profile.picture.url }}" alt="{{ profile_user.username }}">
-                    {% else %}
-                        {% if profile.is_artist %}🎤{% else %}👤{% endif %}
-=======
-{% extends 'soundbytes_base/base.html' %}
+{% extends 'authbase.html' %}
 {% load static %}
 
-{% block title %}Profile - {{ profile_user.username }}{% endblock %}
-
-{% block extra_css %}
+{% block head %}
 <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 {% endblock %}
 
-{% block content %}
+{% block title %}Profile - {{ profile_user.username }}{% endblock %}
+
+{% block body %}
 <div class="profile-container">
     <div class="profile-header">
         <div class="profile-info">
@@ -43,7 +23,6 @@
                     {{ profile.display_name|default:profile_user.username }}
                     {% if profile.is_artist %}
                         <span class="verified-badge">✓ Verified Artist</span>
->>>>>>> profile
                     {% endif %}
                 </div>
                 <div class="profile-username">@{{ profile_user.username }}</div>
@@ -55,129 +34,6 @@
                         <div class="stat-number" id="follower-count">{{ profile.follower_count|default:0 }}</div>
                         <div class="stat-label">Followers</div>
                     </div>
-<<<<<<< HEAD
-                    <div class="profile-username">@{{ profile_user.username }}</div>
-                    {% if profile.bio %}
-                        <div class="profile-bio">{{ profile.bio }}</div>
-                    {% endif %}
-                    <div class="profile-stats">
-                        <div class="stat" data-tooltip="People following you">
-                            <div class="stat-number" id="follower-count">{{ profile.follower_count|default:0 }}</div>
-                            <div class="stat-label">Followers</div>
-                        </div>
-                        <div class="stat" data-tooltip="People you follow">
-                            <div class="stat-number" id="following-count">{{ profile.following_count|default:0 }}</div>
-                            <div class="stat-label">Following</div>
-                        </div>
-                        <div class="stat" data-tooltip="Total profile views">
-                            <div class="stat-number" id="profile-views">{{ profile.profile_views|default:0 }}</div>
-                            <div class="stat-label">Profile Views</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="profile-actions">
-                    {% if is_own_profile %}
-                        <button id="edit-profile-btn" class="action-btn">✏️ Edit Profile</button>
-                    {% else %}
-                        <button id="follow-btn" class="action-btn follow-btn {% if is_following %}following{% endif %}" 
-                                onclick="toggleFollow('{{ profile_user.username }}')">
-                            {% if is_following %}Following{% else %}Follow{% endif %}
-                        </button>
-                    {% endif %}
-                    <button id="like-page-btn" class="action-btn">❤️ <span id="page-likes-count">0</span> Likes</button>
-                    <button id="share-profile-btn" class="action-btn">📤 Share</button>
-                    <button id="dark-mode-toggle" class="action-btn">🌙 Dark Mode</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="profile-content">
-            <!-- Search Section -->
-            <div class="search-container">
-                <input type="text" id="profile-search" class="search-input" placeholder="🔍 Search for songs, artists, or albums...">
-                <div id="search-results" style="display: none;"></div>
-            </div>
-
-            <!-- Color Picker Section -->
-            <div class="color-picker-container">
-                <label>🎨 Theme Color:</label>
-                <input type="color" id="color-picker" value="#667eea">
-            </div>
-
-            {% if profile.is_artist %}
-                <!-- Artist Analytics Section -->
-                <h2 class="section-title">📊 Artist Analytics</h2>
-                <div class="analytics-grid">
-                    <div class="analytics-card">
-                        <div class="analytics-number">{{ analytics.monthly_listeners|default:"0" }}</div>
-                        <div>Monthly Listeners</div>
-                    </div>
-                    <div class="analytics-card">
-                        <div class="analytics-number">{{ analytics.total_streams|default:"0" }}</div>
-                        <div>Total Streams</div>
-                    </div>
-                    <div class="analytics-card">
-                        <div class="analytics-number">{{ analytics.top_region|default:"Global" }}</div>
-                        <div>Top Region</div>
-                    </div>
-                </div>
-                
-                <h2 class="section-title">🎵 Top Songs</h2>
-                <div class="song-list" id="top-songs-list">
-                    {% for song in top_songs|slice:":5" %}
-                        <div class="song-item" data-song-id="{{ song.id }}">
-                            <div class="song-title">{{ forloop.counter }}. {{ song.title }}</div>
-                            <div class="song-stats">
-                                <span class="stat-badge">🎧 {{ song.view_count|default:0 }} streams</span>
-                                <span class="stat-badge">❤️ {{ song.like_count|default:0 }} likes</span>
-                                <span class="stat-badge">📥 {{ song.download_count|default:0 }} downloads</span>
-                            </div>
-                            <audio controls preload="none">
-                                <source src="{% url 'soundbytes:stream_song' song.id %}" type="audio/mpeg">
-                            </audio>
-                            <button class="like-song-btn" data-song-id="{{ song.id }}">
-                                ❤️ <span class="like-count">{{ song.like_count|default:0 }}</span>
-                            </button>
-                        </div>
-                    {% empty %}
-                        <div class="empty-state">
-                            <p>No songs uploaded yet</p>
-                            <small>Upload your first song to see analytics!</small>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-
-            <!-- Recommendations Section -->
-            <h2 class="section-title">🎧 Recommended For You</h2>
-            <div id="recommendations-list" class="recommendations-list"></div>
-
-            <!-- Activity Feed Section -->
-            <h2 class="section-title">📝 Recent Activity</h2>
-            <div id="activity-list" class="activity-list"></div>
-        </div>
-    </div>
-
-    <!-- Edit Profile Modal -->
-    <div id="edit-profile-modal" class="modal">
-        <div class="modal-content">
-            <h3>✏️ Edit Profile</h3>
-            <form id="edit-profile-form" enctype="multipart/form-data">
-                {% csrf_token %}
-                <input type="text" name="display_name" placeholder="Display Name" value="{{ profile.display_name|default:'' }}">
-                <textarea name="bio" placeholder="Tell us about yourself..." rows="4">{{ profile.bio|default:'' }}</textarea>
-                <input type="file" name="picture" accept="image/*">
-                <button type="submit" class="action-btn">Save Changes</button>
-                <button type="button" class="action-btn close-modal" style="background: #999;">Cancel</button>
-            </form>
-        </div>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{% static 'js/profile.js' %}"></script>
-</body>
-</html>
-=======
                     <div class="stat">
                         <div class="stat-number" id="following-count">{{ profile.following_count|default:0 }}</div>
                         <div class="stat-label">Following</div>
@@ -246,4 +102,3 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{% static 'js/profile.js' %}"></script>
 {% endblock %}
->>>>>>> profile

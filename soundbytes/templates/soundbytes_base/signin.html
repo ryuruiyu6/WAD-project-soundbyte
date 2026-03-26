@@ -1,9 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In - SoundByte</title>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
     <style>
         * {
             margin: 0;
@@ -70,8 +68,13 @@
             text-decoration: none;
         }
     </style>
-</head>
-<body>
+{% endblock %}
+
+{% block title %}
+	Sign In - SoundByte
+{% endblock %}
+
+{% block body %}
     <div class="signin-container">
         <h2>Sign In</h2>
         <form method="POST" action="/signin/">
@@ -84,5 +87,4 @@
             Don't have an account? <a href="/signup/">Sign Up</a>
         </div>
     </div>
-</body>
-</html>
+{% endblock %}

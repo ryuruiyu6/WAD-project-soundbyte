@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -6,15 +6,15 @@ from django.http import HttpResponse, JsonResponse, FileResponse
 from django.views.decorators.csrf import csrf_exempt
 from .functions.file_manager import create_song
 from .functions.search_function import search, sort_songs
-from .models import Song, Genre, Album, Post
 from .forms import UserForm,ProfileForm
+from .models import Song, Genre, Album, User, Profile
 
 def landing(request):
 
     context_dict={}
     context_dict['boldmessage']='hi'
 
-    response = render(request, 'soundbytes/landing.html', context = context_dict)
+    response = render(request, 'soundbytes_base/landing.html', context = context_dict)
     return response
 
 def signup(request):
@@ -37,8 +37,7 @@ def signup(request):
     else:
         user_form = UserForm()
         profile_form = ProfileForm()
-    return render(request,
-                  'onboarding/register.html',  # Changed to use onboarding template
+    return render(request,'soundbytes_base/signup.html',
                   context = {'user_form':user_form,
                              'profile_form':profile_form,
                              'registered':registered})
@@ -56,22 +55,17 @@ def signin(request):
         else:
             return HttpResponse("Invalid sign-in details.")
     else:
-        return render(request,'soundbytes/signin.html')
+        return render(request,'soundbytes_base/signin.html')
     
 #Auth only below
     
 @login_required
 def signout(request):
     logout(request)
-    return redirect(reverse('rango:index'))
+    return redirect(reverse('soundbytes:landing'))
 
-@login_required
 def home(request):
     return render(request,'soundbytes_auth/home.html')
-
-@login_required
-def profile(request):
-    return render(request,'soundbytes_auth/profile.html')
 
 
 @csrf_exempt
@@ -212,6 +206,9 @@ def trending_page(request):
     results = sorted(results, key=lambda x: x['score'], reverse=True)[:10]
     return render(request, 'soundbytes_auth/trending.html', {'results': results})
 
+def top_page(request):
+    return render(request)
+
 def upload(request):
     print("UPLOAD ROUTER HIT")
     if request.method == 'POST':
@@ -231,3 +228,59 @@ def upload_post(request):
         return JsonResponse({'error': 'Post must contain text or an image'})
     Post.objects.create(text_content=text, image=image)
     return redirect('/search-page/')
+
+# Update your profile_view to include analytics
+def profile(request, username):
+    user = get_object_or_404(User, username=username)
+    profile = user.profile
+    
+    # Increment profile views
+    if request.user.is_authenticated and request.user != user:
+        profile.profile_views += 1
+        profile.save(update_fields=['profile_views'])
+    
+    # Check if user is following
+    is_following = request.user.is_authenticated and request.user in profile.followers.all()
+    
+    # Get analytics data (only for artists)
+    analytics = get_analytics_context(user) if profile.is_artist() else None
+    if (profile.is_artist):
+        context = {
+            'profile_user': user,
+            'profile': profile,
+            'is_own_profile': request.user.is_authenticated and request.user == user,
+            #'is_following': is_following,
+            #'analytics': analytics,
+            #'top_songs': get_top_songs() if profile.is_artist() else None,
+            #'engagement': get_engagement() if profile.is_artist() else None,
+        }
+    else:
+        context = {
+            'profile_user': user,
+            'profile': profile,
+            'is_own_profile': request.user.is_authenticated and request.user == user,
+            #'stats': (request.user)
+        }
+    return render(request,'soundbytes_auth/profile.html', context)
+
+def get_analytics_context(user):
+    """Generate analytics data for an artist"""
+    from django.db.models import Sum, Count
+    
+    # This is mock data - replace with actual database queries
+    return {
+        'monthly_listeners': '78.4M',
+        'countries': '156',
+        'total_hours': '2.4M',
+        'total_streams': '18.2M',
+        'new_listeners': '342K',
+        'top_region': 'United States',
+        'top_region_percent': 42,
+        'top_regions': [
+            {'flag': '🇺🇸', 'name': 'United States', 'percent': 82},
+            {'flag': '🇬🇧', 'name': 'United Kingdom', 'percent': 67},
+        ],
+        'discovery_rate': 34,
+        'active_day': 'Friday',
+        'active_day_multiplier': '2.8',
+    }

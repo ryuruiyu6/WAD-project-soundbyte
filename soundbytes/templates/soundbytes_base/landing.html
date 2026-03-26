@@ -1,9 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SoundByte - Music Streaming Platform</title>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
     <style>
         * {
             margin: 0;
@@ -47,8 +45,13 @@
             border: 2px solid white;
         }
     </style>
-</head>
-<body>
+{% endblock %}
+
+{% block title %}
+	SoundByte - Music Streaming Platform
+{% endblock %}
+
+{% block body %}
     <div class="container">
         <h1>🎵 SoundByte</h1>
         <p>Discover, stream, and share amazing music with the world</p>
@@ -57,5 +60,4 @@
             <a href="/signin/" class="btn btn-outline">Sign In</a>
         </div>
     </div>
-</body>
-</html>
+{% endblock %}
