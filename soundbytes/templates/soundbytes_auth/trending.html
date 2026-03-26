@@ -9,7 +9,7 @@
             <p>Likes: {{ item.data.like_count }}</p>
 
             <audio controls>
-                <source src="{% url 'stream_song' item.data.id %}" type="audio/mpeg">
+                <source src="{% url 'soundbytes:stream_song' item.data.id %}" type="audio/mpeg">
             </audio>
         </div>
 
