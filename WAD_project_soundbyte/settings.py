@@ -17,6 +17,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'soundbytes',
+    'onboarding',  
 ]
 
 MIDDLEWARE = [
@@ -82,3 +83,5 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# Authentication settings
+LOGIN_URL = '/signin/'
