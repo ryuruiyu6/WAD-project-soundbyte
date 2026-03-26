@@ -3,314 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SoundByte - Profile</title>
+    <title>Profile - {{ profile_user.username }}</title>
+    <style>
+        /* Profile styles */
+        .profile-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 1rem;
+            padding: 2rem;
+            color: white;
+            margin-bottom: 2rem;
+        }
+        
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            overflow: hidden;
+        }
+        
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-details {
+            flex: 1;
+        }
+        
+        .profile-name {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-username {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+        
+        .profile-bio {
+            margin: 1rem 0;
+            line-height: 1.5;
+        }
+        
+        .profile-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .edit-profile-btn, .follow-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .follow-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .follow-btn.following {
+            background: white;
+            color: #667eea;
+        }
+        
+        .profile-content {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        /* Analytics styles for artists */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .analytics-card {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+        
+        .analytics-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <div style="margin-bottom: 20px; padding: 10px; border-bottom: 1px solid #ccc;">
-        <a href="{% url 'soundbytes:home' %}" style="margin-right: 15px;">Home</a>
-        <a href="{% url 'soundbytes:search_page' %}" style="margin-right: 15px;">Search</a>
-        <a href="{% url 'soundbytes:upload_page' %}" style="margin-right: 15px;">Upload</a>
-        <a href="{% url 'soundbytes:trending' %}" style="margin-right: 15px;">Trending</a>
-        <a href="{% url 'soundbytes:profile' %}" style="margin-right: 15px; font-weight: bold;">Profile</a>
-        <a href="{% url 'soundbytes:signout' %}">Sign Out</a>
-    </div>
-
-    <!-- Profile Header -->
-    <div style="margin-bottom: 30px; padding: 20px; border: 1px solid #ddd; background: #f9f9f9;">
-        <div style="display: inline-block; vertical-align: top; margin-right: 30px;">
-            {% if user.profile.picture %}
-                <img src="{{ user.profile.picture.url }}" width="120" height="120" style="border-radius: 50%;">
-            {% else %}
-                <div style="width: 120px; height: 120px; border-radius: 50%; background: #ddd; display: inline-flex; align-items: center; justify-content: center; font-size: 48px;">
-                    🎤
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-info">
+                <div class="profile-avatar">
+                    {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" alt="{{ profile_user.username }}">
+                    {% else %}
+                        {% if profile.is_artist %}🎤{% else %}👤{% endif %}
+                    {% endif %}
                 </div>
+                <div class="profile-details">
+                    <div class="profile-name">
+                        {{ profile.display_name|default:profile_user.username }}
+                        {% if profile.is_artist %}
+                            <span style="font-size: 0.8rem;">✓ Verified Artist</span>
+                        {% endif %}
+                    </div>
+                    <div class="profile-username">@{{ profile_user.username }}</div>
+                    {% if profile.bio %}
+                        <div class="profile-bio">{{ profile.bio }}</div>
+                    {% endif %}
+                    <div class="profile-stats">
+                        <div class="stat">
+                            <div class="stat-number">{{ profile.follower_count }}</div>
+                            <div class="stat-label">Followers</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">{{ profile.following_count }}</div>
+                            <div class="stat-label">Following</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">{{ profile.profile_views }}</div>
+                            <div class="stat-label">Profile Views</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    {% if is_own_profile %}
+                        <a href="{% url 'profile_edit' %}" class="edit-profile-btn">Edit Profile</a>
+                    {% else %}
+                        <button class="follow-btn {% if is_following %}following{% endif %}" 
+                                onclick="followUser('{{ profile_user.username }}')">
+                            {% if is_following %}Following{% else %}Follow{% endif %}
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-content">
+            {% if profile.is_artist %}
+                <h2 class="section-title">📊 Artist Analytics</h2>
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <div class="analytics-number">{{ analytics.monthly_listeners|default:"0" }}</div>
+                        <div>Monthly Listeners</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-number">{{ analytics.total_streams|default:"0" }}</div>
+                        <div>Total Streams</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-number">{{ analytics.top_region|default:"Global" }}</div>
+                        <div>Top Region</div>
+                    </div>
+                </div>
+                
+                {% if top_songs %}
+                <h2 class="section-title" style="margin-top: 2rem;">🎵 Top Songs</h2>
+                {% for song in top_songs|slice:":5" %}
+                    <div style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <strong>{{ forloop.counter }}. {{ song.title }}</strong>
+                        <span style="float: right;">{{ song.streams }} streams</span>
+                    </div>
+                {% endfor %}
+                {% endif %}
+            {% else %}
+                <h2 class="section-title">Recent Activity</h2>
+                <p style="color: #666;">No recent activity to display.</p>
             {% endif %}
         </div>
-        
-        <div style="display: inline-block; vertical-align: top;">
-            <h1>{{ user.username }}</h1>
-            <p style="color: #666;">@{{ user.username }}</p>
-            
-            <p>
-                {% if user.profile.bio %}
-                    {{ user.profile.bio }}
-                {% else %}
-                    Music enthusiast sharing my sounds with the world! 🎵
-                {% endif %}
-            </p>
-            
-            <div style="margin-top: 15px;">
-                <span style="margin-right: 20px;"><strong id="songCount">0</strong> Songs</span>
-                <span style="margin-right: 20px;"><strong id="postCount">0</strong> Posts</span>
-                <span style="margin-right: 20px;"><strong id="albumCount">0</strong> Albums</span>
-            </div>
-            
-            <button onclick="openEditProfileModal()" style="margin-top: 15px; padding: 8px 20px; cursor: pointer;">Edit Profile</button>
-        </div>
     </div>
 
-    <!-- Tabs -->
-    <div style="margin-bottom: 20px; border-bottom: 1px solid #ccc;">
-        <button onclick="showTab('songs')" id="songsTabBtn" style="padding: 10px 20px; margin-right: 5px; cursor: pointer; background: #007bff; color: white; border: none;">My Songs</button>
-        <button onclick="showTab('posts')" id="postsTabBtn" style="padding: 10px 20px; margin-right: 5px; cursor: pointer; background: #f0f0f0; border: none;">My Posts</button>
-        <button onclick="showTab('albums')" id="albumsTabBtn" style="padding: 10px 20px; margin-right: 5px; cursor: pointer; background: #f0f0f0; border: none;">My Albums</button>
-        <button onclick="showTab('analytics')" id="analyticsTabBtn" style="padding: 10px 20px; cursor: pointer; background: #f0f0f0; border: none;">Analytics</button>
-    </div>
-
-    <!-- Songs Tab Content -->
-    <div id="songsContent">
-        <h2>My Songs</h2>
-        <div id="songsList">
-            <p>Loading your songs...</p>
-        </div>
-    </div>
-
-    <!-- Posts Tab Content -->
-    <div id="postsContent" style="display: none;">
-        <h2>My Posts</h2>
-        <div id="postsList">
-            <p>Loading your posts...</p>
-        </div>
-    </div>
-
-    <!-- Albums Tab Content -->
-    <div id="albumsContent" style="display: none;">
-        <h2>My Albums</h2>
-        <div id="albumsList">
-            <p>Loading your albums...</p>
-        </div>
-    </div>
-
-    <!-- Analytics Tab Content -->
-    <div id="analyticsContent" style="display: none;">
-        <h2>Analytics</h2>
-        <div style="padding: 20px; border: 1px solid #ddd;">
-            <p><strong>Total Streams:</strong> <span id="totalStreams">0</span></p>
-            <p><strong>Total Likes:</strong> <span id="totalLikes">0</span></p>
-            <p><strong>Total Downloads:</strong> <span id="totalDownloads">0</span></p>
-            <p><strong>Engagement Rate:</strong> <span id="engagementRate">0</span>%</p>
-        </div>
-    </div>
-
-    <!-- Edit Profile Modal -->
-    <div id="editProfileModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
-        <div style="background: white; margin: 100px auto; padding: 30px; width: 500px; border-radius: 5px;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                <h2>Edit Profile</h2>
-                <button onclick="closeModal()" style="cursor: pointer;">×</button>
-            </div>
-            
-            <form id="editProfileForm" method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px;"><strong>Username:</strong></label>
-                    <input type="text" name="username" id="editUsername" value="{{ user.username }}" style="width: 100%; padding: 8px; border: 1px solid #ddd;">
-                </div>
-                
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px;"><strong>Bio:</strong></label>
-                    <textarea name="bio" id="editBio" rows="4" style="width: 100%; padding: 8px; border: 1px solid #ddd;">{% if user.profile.bio %}{{ user.profile.bio }}{% else %}Music enthusiast sharing my sounds with the world! 🎵{% endif %}</textarea>
-                </div>
-                
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px;"><strong>Profile Picture:</strong></label>
-                    <input type="file" name="picture" id="editPicture" accept="image/*">
-                </div>
-                
-                <button type="submit" style="padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer;">Save Changes</button>
-            </form>
-        </div>
-    </div>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // Tab switching
-        function showTab(tabName) {
-            // Hide all content divs
-            document.getElementById('songsContent').style.display = 'none';
-            document.getElementById('postsContent').style.display = 'none';
-            document.getElementById('albumsContent').style.display = 'none';
-            document.getElementById('analyticsContent').style.display = 'none';
-            
-            // Show selected content
-            document.getElementById(tabName + 'Content').style.display = 'block';
-            
-            // Update tab button styles
-            const tabs = ['songs', 'posts', 'albums', 'analytics'];
-            tabs.forEach(tab => {
-                const btn = document.getElementById(tab + 'TabBtn');
-                if (btn) {
-                    if (tab === tabName) {
-                        btn.style.background = '#007bff';
-                        btn.style.color = 'white';
-                    } else {
-                        btn.style.background = '#f0f0f0';
-                        btn.style.color = 'black';
-                    }
-                }
-            });
-        }
-        
-        // Modal functions
-        function openEditProfileModal() {
-            document.getElementById('editProfileModal').style.display = 'block';
-        }
-        
-        function closeModal() {
-            document.getElementById('editProfileModal').style.display = 'none';
-        }
-        
-        // Format numbers
-        function formatNumber(num) {
-            if (num >= 1000000) {
-                return (num / 1000000).toFixed(1) + 'M';
-            }
-            if (num >= 1000) {
-                return (num / 1000).toFixed(1) + 'K';
-            }
-            return num.toString();
-        }
-        
-        // Load user data
-        function loadUserData() {
-            // Fetch songs by current user
-            fetch('/api/user-songs/')
-                .then(response => response.json())
-                .then(data => {
-                    const songsList = document.getElementById('songsList');
-                    if (data.length === 0) {
-                        songsList.innerHTML = '<p>You haven\'t uploaded any songs yet. <a href="{% url "soundbytes:upload_page" %}">Upload your first song!</a></p>';
-                    } else {
-                        songsList.innerHTML = data.map(song => `
-                            <div style="border: 1px solid #ddd; margin: 15px 0; padding: 15px;">
-                                <h3 style="margin: 0 0 10px 0;">${song.title}</h3>
-                                <p style="margin: 5px 0;"><strong>Artist:</strong> ${song.artist}</p>
-                                <p style="margin: 5px 0;">
-                                    <strong>Stats:</strong> 
-                                    ${formatNumber(song.view_count)} plays | 
-                                    ${formatNumber(song.like_count)} likes | 
-                                    ${formatNumber(song.download_count)} downloads
-                                </p>
-                                <div style="margin: 10px 0;">
-                                    <audio controls style="width: 100%;">
-                                        <source src="{% url 'stream_song' 0 %}${song.id}/" type="audio/mpeg">
-                                        Your browser does not support the audio element.
-                                    </audio>
-                                </div>
-                            </div>
-                        `).join('');
-                    }
-                    document.getElementById('songCount').textContent = data.length;
-                    
-                    // Calculate totals for analytics
-                    const totalStreams = data.reduce((sum, song) => sum + song.view_count, 0);
-                    const totalLikes = data.reduce((sum, song) => sum + song.like_count, 0);
-                    const totalDownloads = data.reduce((sum, song) => sum + song.download_count, 0);
-                    
-                    document.getElementById('totalStreams').textContent = formatNumber(totalStreams);
-                    document.getElementById('totalLikes').textContent = formatNumber(totalLikes);
-                    document.getElementById('totalDownloads').textContent = formatNumber(totalDownloads);
-                    
-                    const engagementRate = totalStreams > 0 ? ((totalLikes / totalStreams) * 100).toFixed(1) : 0;
-                    document.getElementById('engagementRate').textContent = engagementRate;
-                })
-                .catch(error => {
-                    console.error('Error loading songs:', error);
-                    document.getElementById('songsList').innerHTML = '<p style="color: red;">Unable to load songs. Please try again later.</p>';
-                });
-            
-            // Fetch posts by current user
-            fetch('/api/user-posts/')
-                .then(response => response.json())
-                .then(data => {
-                    const postsList = document.getElementById('postsList');
-                    if (data.length === 0) {
-                        postsList.innerHTML = '<p>You haven\'t created any posts yet.</p>';
-                    } else {
-                        postsList.innerHTML = data.map(post => `
-                            <div style="border: 1px solid #ddd; margin: 15px 0; padding: 15px;">
-                                ${post.text_content ? `<p style="margin: 0 0 10px 0;">${post.text_content}</p>` : ''}
-                                ${post.image ? `<img src="${post.image}" width="200" style="margin: 10px 0;">` : ''}
-                                <p style="margin: 5px 0; color: #666;">❤️ ${formatNumber(post.like_count)} likes</p>
-                                <p style="margin: 5px 0; color: #666;">📅 ${new Date(post.created_at).toLocaleDateString()}</p>
-                            </div>
-                        `).join('');
-                    }
-                    document.getElementById('postCount').textContent = data.length;
-                })
-                .catch(error => {
-                    console.error('Error loading posts:', error);
-                });
-            
-            // Fetch albums by current user
-            fetch('/api/user-albums/')
-                .then(response => response.json())
-                .then(data => {
-                    const albumsList = document.getElementById('albumsList');
-                    if (data.length === 0) {
-                        albumsList.innerHTML = '<p>You haven\'t created any albums yet. <a href="{% url "soundbytes:create_album" %}">Create your first album!</a></p>';
-                    } else {
-                        albumsList.innerHTML = data.map(album => `
-                            <div style="border: 1px solid #ddd; margin: 15px 0; padding: 15px;">
-                                <h3 style="margin: 0 0 10px 0;">
-                                    <a href="{% url 'soundbytes:album_page' 0 %}${album.id}/">${album.title}</a>
-                                </h3>
-                                <p style="margin: 5px 0;"><strong>Artist:</strong> ${album.artist}</p>
-                                ${album.cover_image ? `<img src="${album.cover_image}" width="150" style="margin: 10px 0;">` : ''}
-                                <p style="margin: 5px 0; color: #666;">Created: ${new Date(album.created_at).toLocaleDateString()}</p>
-                            </div>
-                        `).join('');
-                    }
-                    document.getElementById('albumCount').textContent = data.length;
-                })
-                .catch(error => {
-                    console.error('Error loading albums:', error);
-                });
-        }
-        
-        // Handle profile update
-        document.getElementById('editProfileForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            
-            fetch('/api/update-profile/', {
+        function followUser(username) {
+            $.ajax({
+                url: '/follow/' + username + '/',
                 method: 'POST',
-                body: formData,
                 headers: {
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                success: function(data) {
+                    const btn = $('.follow-btn');
+                    if (data.is_following) {
+                        btn.text('Following').addClass('following');
+                    } else {
+                        btn.text('Follow').removeClass('following');
+                    }
+                    $('.stat:first .stat-number').text(data.follower_count);
                 }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Profile updated successfully!');
-                    closeModal();
-                    location.reload();
-                } else {
-                    alert('Error updating profile: ' + (data.error || 'Unknown error'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error updating profile');
             });
-        });
-        
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('editProfileModal');
-            if (event.target === modal) {
-                closeModal();
-            }
         }
-        
-        // Load data on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            loadUserData();
-            showTab('songs');
-        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
     </script>
 </body>
 </html>
