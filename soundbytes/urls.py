@@ -18,13 +18,10 @@ urlpatterns = [
     path('create-album/', views.create_album, name='create_album'),
     path('album/<int:album_id>/', views.album_page, name='album_page'),
     path('trending/', views.trending_page, name='trending'),
-<<<<<<< HEAD
     path('top/', views.top_page, name='top'),
     path('profile/<str:username>/', views.profile, name='profile'),
     path('playlists/<str:username>/', views.profile, name='playlist'),
     #path('profile/<str:username>/follow/', views.follow_user, name='follow_user'),
     #path('profile/edit/', views.profile_edit, name='profile_edit'),
     #path('analytics/<str:username>/', views.analytics, name='analytics'),
-=======
->>>>>>> 0dc9d88c0e6a5c32f2f6cdb1dd8b79006614136f
 ]
