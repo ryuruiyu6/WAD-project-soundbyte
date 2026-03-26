@@ -1,6 +1,19 @@
 from django.db import models
+from django.template.defaultfilters import slugify
+from django.contrib.auth.models import User
 
-# Create your models here.
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    picture = models.ImageField(upload_to='profile_images',blank=True)
+    slug = models.SlugField(unique=True)
+
+    def save(self,*args,**kwargs):
+        self.slug=slugify(self.user.username)
+        super().save(*args,**kwargs)
+
+    def __str__(self):
+        return self.user.username
+
 class Genre(models.Model):
     name = models.CharField(max_length=50)
 
@@ -40,3 +53,8 @@ class Song(models.Model):
     def __str__(self):
         return self.title
     
+class Post(models.Model):
+    text_content = models.TextField(blank=True)
+    image = models.ImageField(upload_to='posts/', blank=True, null=True)
+    like_count = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)

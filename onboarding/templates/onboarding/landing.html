@@ -1,0 +1,17 @@
+{% extends "onboarding/base.html" %}
+
+{% load static %}
+
+{% block title %}soundbytes{% endblock %}
+
+{% block content %}
+    <div class="centerDiv" style="height: 100%;">
+        <img alt="soundbytes typography logo" />
+
+        <br />
+
+        <a href="{% url 'register' %}" class="basicButton">Make an account</a>
+        <br />
+        <a href="{% url 'sign-in' %}" class="basicButton">Sign in</a>
+    </div>
+{% endblock %}
