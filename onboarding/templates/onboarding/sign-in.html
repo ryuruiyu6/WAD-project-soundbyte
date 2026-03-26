@@ -1,17 +1,24 @@
+{% extends "onboarding/base.html" %}
+
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
+{% block title %}sign into soundbytes{% endblock %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-    <title>sign into soundbytes</title>
-</head>
+{% block content %}
+    <div class="centerDiv" style="height: 100%;">
+        <img src="{% static 'soundbyte_logo.png' %}" alt="soundbytes logo" style="height: 30%;" />
 
-<body>
-    <h1>sign in</h1>
-</body>
+        <h2>Sign in</h2>
 
-</html>
+        <ul id="signInList">
+            <li id="usernameInput">
+                <input placeholder="username">
+            </li>
+            <li id="passwordInput">
+                <input placeholder="password">
+            </li>
+        </ul>
+
+        <br />
+    </div>
+{% endblock %}

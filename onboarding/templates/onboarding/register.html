@@ -1,15 +1,33 @@
+{% extends "onboarding/base.html" %}
+
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+{% block title %}register for soundbytes{% endblock %}
 
-    <title>sign up for soundbytes</title>
-</head>
-<body>
-    <h1>register</h1>
-</body>
-</html>
+{% block content %}
+    <div class="centerDiv" style="height: 100%;">
+        <img src="{% static 'soundbyte_logo.png' %}" alt="soundbytes logo" style="height: 30%;" />
+        <h2 style="margin-bottom: 0;">Create an account</h2>
+
+        <!-- sign in must have 3 input boxes for username and password, and email -->
+
+        <ul id="registerList">
+            <li id="usernameInput">
+                <input placeholder="username">
+            </li>
+            <li id="emailInput">
+                <input placeholder="email">
+            </li>
+            <li id="passwordInput">
+                <input placeholder="password">
+            </li>
+            <li id="confirmPasswordInput">
+                <input placeholder="confirm password">
+            </li>
+        </ul>
+
+        <button class="basicButtonGreen">
+            Create account
+        </button>
+    </div>
+{% endblock %}

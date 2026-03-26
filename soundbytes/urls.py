@@ -20,4 +20,3 @@ urlpatterns = [
     path('album/<int:album_id>/', views.album_page, name='album_page'),
     path('trending/', views.trending_page, name='trending'),
 ]
-] 
