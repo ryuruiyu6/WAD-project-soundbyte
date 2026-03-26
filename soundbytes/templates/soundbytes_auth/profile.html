@@ -4,171 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - {{ profile_user.username }}</title>
+    <title>Profile - {{ profile_user.username }} | SoundByte</title>
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
-</head>
-<body>
-    <div class="profile-container">
-        <h1>Profile Page</h1>
-        <button id="test-btn" class="test-button">Test JavaScript</button>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{% static 'js/profile.js' %}"></script>
-</body>
-</html>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - {{ profile_user.username }}</title>
-    <style>
-        /* Profile styles */
-        .profile-container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-        
-        .profile-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 1rem;
-            padding: 2rem;
-            color: white;
-            margin-bottom: 2rem;
-        }
-        
-        .profile-info {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        .profile-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            overflow: hidden;
-        }
-        
-        .profile-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .profile-details {
-            flex: 1;
-        }
-        
-        .profile-name {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-        
-        .profile-username {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 1rem;
-        }
-        
-        .profile-bio {
-            margin: 1rem 0;
-            line-height: 1.5;
-        }
-        
-        .profile-stats {
-            display: flex;
-            gap: 2rem;
-            margin-top: 1rem;
-        }
-        
-        .stat {
-            text-align: center;
-        }
-        
-        .stat-number {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-        
-        .stat-label {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-        
-        .edit-profile-btn, .follow-btn {
-            background: white;
-            color: #667eea;
-            border: none;
-            padding: 0.5rem 1.5rem;
-            border-radius: 2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .follow-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-        
-        .follow-btn.following {
-            background: white;
-            color: #667eea;
-        }
-        
-        .profile-content {
-            background: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .section-title {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #333;
-        }
-        
-        /* Analytics styles for artists */
-        .analytics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .analytics-card {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            text-align: center;
-        }
-        
-        .analytics-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #667eea;
-        }
-    </style>
 </head>
 <body>
     <div class="profile-container">
         <div class="profile-header">
             <div class="profile-info">
                 <div class="profile-avatar">
-                    {% if profile.profile_picture %}
-                        <img src="{{ profile.profile_picture.url }}" alt="{{ profile_user.username }}">
+                    {% if profile.picture %}
+                        <img src="{{ profile.picture.url }}" alt="{{ profile_user.username }}">
                     {% else %}
                         {% if profile.is_artist %}🎤{% else %}👤{% endif %}
                     {% endif %}
@@ -185,35 +30,51 @@
                         <div class="profile-bio">{{ profile.bio }}</div>
                     {% endif %}
                     <div class="profile-stats">
-                        <div class="stat">
-                            <div class="stat-number">{{ profile.follower_count }}</div>
+                        <div class="stat" data-tooltip="People following you">
+                            <div class="stat-number" id="follower-count">{{ profile.follower_count|default:0 }}</div>
                             <div class="stat-label">Followers</div>
                         </div>
-                        <div class="stat">
-                            <div class="stat-number">{{ profile.following_count }}</div>
+                        <div class="stat" data-tooltip="People you follow">
+                            <div class="stat-number" id="following-count">{{ profile.following_count|default:0 }}</div>
                             <div class="stat-label">Following</div>
                         </div>
-                        <div class="stat">
-                            <div class="stat-number">{{ profile.profile_views }}</div>
+                        <div class="stat" data-tooltip="Total profile views">
+                            <div class="stat-number" id="profile-views">{{ profile.profile_views|default:0 }}</div>
                             <div class="stat-label">Profile Views</div>
                         </div>
                     </div>
                 </div>
-                <div>
+                <div class="profile-actions">
                     {% if is_own_profile %}
-                        <a href="{% url 'profile_edit' %}" class="edit-profile-btn">Edit Profile</a>
+                        <button id="edit-profile-btn" class="action-btn">✏️ Edit Profile</button>
                     {% else %}
-                        <button class="follow-btn {% if is_following %}following{% endif %}" 
-                                onclick="followUser('{{ profile_user.username }}')">
+                        <button id="follow-btn" class="action-btn follow-btn {% if is_following %}following{% endif %}" 
+                                onclick="toggleFollow('{{ profile_user.username }}')">
                             {% if is_following %}Following{% else %}Follow{% endif %}
                         </button>
                     {% endif %}
+                    <button id="like-page-btn" class="action-btn">❤️ <span id="page-likes-count">0</span> Likes</button>
+                    <button id="share-profile-btn" class="action-btn">📤 Share</button>
+                    <button id="dark-mode-toggle" class="action-btn">🌙 Dark Mode</button>
                 </div>
             </div>
         </div>
 
         <div class="profile-content">
+            <!-- Search Section -->
+            <div class="search-container">
+                <input type="text" id="profile-search" class="search-input" placeholder="🔍 Search for songs, artists, or albums...">
+                <div id="search-results" style="display: none;"></div>
+            </div>
+
+            <!-- Color Picker Section -->
+            <div class="color-picker-container">
+                <label>🎨 Theme Color:</label>
+                <input type="color" id="color-picker" value="#667eea">
+            </div>
+
             {% if profile.is_artist %}
+                <!-- Artist Analytics Section -->
                 <h2 class="section-title">📊 Artist Analytics</h2>
                 <div class="analytics-grid">
                     <div class="analytics-card">
@@ -230,58 +91,58 @@
                     </div>
                 </div>
                 
-                {% if top_songs %}
-                <h2 class="section-title" style="margin-top: 2rem;">🎵 Top Songs</h2>
-                {% for song in top_songs|slice:":5" %}
-                    <div style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
-                        <strong>{{ forloop.counter }}. {{ song.title }}</strong>
-                        <span style="float: right;">{{ song.streams }} streams</span>
-                    </div>
-                {% endfor %}
-                {% endif %}
-            {% else %}
-                <h2 class="section-title">Recent Activity</h2>
-                <p style="color: #666;">No recent activity to display.</p>
+                <h2 class="section-title">🎵 Top Songs</h2>
+                <div class="song-list" id="top-songs-list">
+                    {% for song in top_songs|slice:":5" %}
+                        <div class="song-item" data-song-id="{{ song.id }}">
+                            <div class="song-title">{{ forloop.counter }}. {{ song.title }}</div>
+                            <div class="song-stats">
+                                <span class="stat-badge">🎧 {{ song.view_count|default:0 }} streams</span>
+                                <span class="stat-badge">❤️ {{ song.like_count|default:0 }} likes</span>
+                                <span class="stat-badge">📥 {{ song.download_count|default:0 }} downloads</span>
+                            </div>
+                            <audio controls preload="none">
+                                <source src="{% url 'soundbytes:stream_song' song.id %}" type="audio/mpeg">
+                            </audio>
+                            <button class="like-song-btn" data-song-id="{{ song.id }}">
+                                ❤️ <span class="like-count">{{ song.like_count|default:0 }}</span>
+                            </button>
+                        </div>
+                    {% empty %}
+                        <div class="empty-state">
+                            <p>No songs uploaded yet</p>
+                            <small>Upload your first song to see analytics!</small>
+                        </div>
+                    {% endfor %}
+                </div>
             {% endif %}
+
+            <!-- Recommendations Section -->
+            <h2 class="section-title">🎧 Recommended For You</h2>
+            <div id="recommendations-list" class="recommendations-list"></div>
+
+            <!-- Activity Feed Section -->
+            <h2 class="section-title">📝 Recent Activity</h2>
+            <div id="activity-list" class="activity-list"></div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="edit-profile-modal" class="modal">
+        <div class="modal-content">
+            <h3>✏️ Edit Profile</h3>
+            <form id="edit-profile-form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="text" name="display_name" placeholder="Display Name" value="{{ profile.display_name|default:'' }}">
+                <textarea name="bio" placeholder="Tell us about yourself..." rows="4">{{ profile.bio|default:'' }}</textarea>
+                <input type="file" name="picture" accept="image/*">
+                <button type="submit" class="action-btn">Save Changes</button>
+                <button type="button" class="action-btn close-modal" style="background: #999;">Cancel</button>
+            </form>
         </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        function followUser(username) {
-            $.ajax({
-                url: '/follow/' + username + '/',
-                method: 'POST',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                success: function(data) {
-                    const btn = $('.follow-btn');
-                    if (data.is_following) {
-                        btn.text('Following').addClass('following');
-                    } else {
-                        btn.text('Follow').removeClass('following');
-                    }
-                    $('.stat:first .stat-number').text(data.follower_count);
-                }
-            });
-        }
-
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-    </script>
+    <script src="{% static 'js/profile.js' %}"></script>
 </body>
 </html>
