@@ -12,7 +12,7 @@
         <p>{{ song.title }}</p>
 
         <audio controls>
-            <source src="{% url 'stream_song' song.id %}" type="audio/mpeg">
+            <source src="{% url 'soundbytes:stream_song' song.id %}" type="audio/mpeg">
         </audio>
     </div>
 {% endfor %}
