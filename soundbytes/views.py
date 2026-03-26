@@ -14,7 +14,7 @@ def landing(request):
     context_dict={}
     context_dict['boldmessage']='hi'
 
-    response = render(request, 'soundbytes/landing.html', context = context_dict)
+    response = render(request, 'soundbytes_base/landing.html', context = context_dict)
     return response
 
 def signup(request):
@@ -37,8 +37,7 @@ def signup(request):
     else:
         user_form = UserForm()
         profile_form = ProfileForm()
-    return render(request,
-                  'soundbytes/signup.html',
+    return render(request,'soundbytes_base/signup.html',
                   context = {'user_form':user_form,
                              'profile_form':profile_form,
                              'registered':registered})
@@ -57,7 +56,7 @@ def signin(request):
         else:
             return HttpResponse("Invalid sign-in details.")
     else:
-        return render(request,'soundbytes/signin.html')
+        return render(request,'soundbytes_base/signin.html')
     
 #Auth only below
     
@@ -208,6 +207,9 @@ def trending_page(request):
     results = sorted(results, key=lambda x: x['score'], reverse=True)[:10]
     return render(request, 'soundbytes_auth/trending.html', {'results': results})
 
+def top_page(request):
+    return render(request)
+
 def upload(request):
     print("UPLOAD ROUTER HIT")
     if request.method == 'POST':
@@ -243,18 +245,24 @@ def profile(request, username):
     
     # Get analytics data (only for artists)
     analytics = get_analytics_context(user) if profile.is_artist() else None
-    
-    context = {
-        #'profile_user': user,
-        #'profile': profile,
-        #'is_own_profile': request.user.is_authenticated and request.user == user,
-        #'is_following': is_following,
-        #'analytics': analytics,
-        #'demographics': get_demographics() if profile.is_artist() else None,
-        #'top_songs': get_top_songs() if profile.is_artist() else None,
-        #'engagement': get_engagement() if profile.is_artist() else None,
-    }
-    return render(request, 'soundbytes_auth/analytics.html' if profile.is_artist() else 'soundbytes_auth/profile.html', context)
+    if (profile.is_artist):
+        context = {
+            'profile_user': user,
+            'profile': profile,
+            'is_own_profile': request.user.is_authenticated and request.user == user,
+            #'is_following': is_following,
+            #'analytics': analytics,
+            #'top_songs': get_top_songs() if profile.is_artist() else None,
+            #'engagement': get_engagement() if profile.is_artist() else None,
+        }
+    else:
+        context = {
+            'profile_user': user,
+            'profile': profile,
+            'is_own_profile': request.user.is_authenticated and request.user == user,
+            #'stats': (request.user)
+        }
+    return render(request,'soundbytes_auth/profile.html', context)
 
 def get_analytics_context(user):
     """Generate analytics data for an artist"""

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+	Landing
+{% endblock %}
+
+{% block body %}
+    <a href="{% url 'soundbytes:signup' %}">Sign Up</a>
+	<a href="{% url 'soundbytes:signin' %}">Sign In</a>
+{% endblock %}

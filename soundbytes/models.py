@@ -6,9 +6,7 @@ from django.db import models
 from django.core.validators import FileExtensionValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.utils import timezone
 import os
-import datetime
 
 def profile_picture_path(instance, filename):
     ext = filename.split('.')[-1]
@@ -24,7 +22,6 @@ class Profile(models.Model):
     USER_TYPE_CHOICES = [
         ('LISTENER', 'Music Listener'),
         ('ARTIST', 'Musician/Artist'),
-        ('BOTH', 'Both Listener and Artist'),
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -48,10 +45,6 @@ class Profile(models.Model):
     followers = models.ManyToManyField(User, related_name='following', blank=True)
     
     date_joined_profile = models.DateTimeField(auto_now_add=True)
-    last_active = models.DateTimeField(auto_now=True)
-    
-    is_public = models.BooleanField(default=True)
-    show_activity = models.BooleanField(default=True)
     
     profile_views = models.PositiveIntegerField(default=0)
     total_likes_received = models.PositiveIntegerField(default=0)
@@ -71,7 +64,7 @@ class Profile(models.Model):
         return self.display_name if self.display_name else self.user.username
     
     def is_artist(self):
-        return self.user_type in ['ARTIST', 'BOTH']
+        return self.user_type in ['ARTIST']
     
     def follower_count(self):
         return self.followers.count()
