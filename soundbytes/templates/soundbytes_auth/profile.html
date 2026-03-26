@@ -1,0 +1,614 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Platform - Artist Analytics</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="analytics-container">
+        <!-- Cover Photo -->
+        <div class="cover-photo"></div>
+
+        <!-- Artist Header -->
+        <div class="artist-header">
+            <div class="artist-avatar">
+                🎤
+            </div>
+            <div class="artist-info">
+                <h1 class="artist-name">
+                    Taylor Swift
+                    <span class="verification-badge">Verified Artist</span>
+                </h1>
+                <div class="artist-username">@taylorswift</div>
+                <div class="artist-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">78.4M</div>
+                        <div class="stat-label">Monthly Listeners</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">156</div>
+                        <div class="stat-label">Countries</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">24.3M</div>
+                        <div class="stat-label">Followers</div>
+                    </div>
+                </div>
+            </div>
+            <button class="manage-btn">Manage Analytics</button>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="analytics-tabs">
+            <div class="tab active" onclick="showTab('overview')">Overview</div>
+            <div class="tab" onclick="showTab('demographics')">Demographics</div>
+            <div class="tab" onclick="showTab('songs')">Top Songs</div>
+            <div class="tab" onclick="showTab('engagement')">Engagement</div>
+        </div>
+
+        <!-- Content Sections -->
+        <div class="analytics-content">
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <!-- Key Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">⏱️</div>
+                        <h3>Total Listening Hours</h3>
+                        <div class="stat-main">2.4M</div>
+                        <div class="stat-trend">↑ 12.5% from last month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🌍</div>
+                        <h3>Most Popular Region</h3>
+                        <div class="stat-main">United States</div>
+                        <div class="stat-trend">42% of total listeners</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📀</div>
+                        <h3>Total Streams</h3>
+                        <div class="stat-main">18.2M</div>
+                        <div class="stat-trend">↑ 8.3% from last month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <h3>New Listeners</h3>
+                        <div class="stat-main">342K</div>
+                        <div class="stat-trend">↑ 15.2% from last month</div>
+                    </div>
+                </div>
+
+                <!-- Regional Popularity -->
+                <div class="analytics-row">
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h2>Top Regions by Listening Hours</h2>
+                            <select class="time-filter">
+                                <option>Last 30 days</option>
+                                <option>Last 90 days</option>
+                                <option>Last year</option>
+                            </select>
+                        </div>
+                        <div class="bar-chart">
+                            <div class="bar-item">
+                                <span class="bar-label">🇺🇸 United States</span>
+                                <div class="bar-container">
+                                    <div class="bar-fill" style="width: 82%">82%</div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <span class="bar-label">🇬🇧 United Kingdom</span>
+                                <div class="bar-container">
+                                    <div class="bar-fill" style="width: 67%">67%</div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <span class="bar-label">🇨🇦 Canada</span>
+                                <div class="bar-container">
+                                    <div class="bar-fill" style="width: 54%">54%</div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <span class="bar-label">🇦🇺 Australia</span>
+                                <div class="bar-container">
+                                    <div class="bar-fill" style="width: 48%">48%</div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <span class="bar-label">🇩🇪 Germany</span>
+                                <div class="bar-container">
+                                    <div class="bar-fill" style="width: 41%">41%</div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <span class="bar-label">🇯🇵 Japan</span>
+                                <div class="bar-container">
+                                    <div class="bar-fill" style="width: 35%">35%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h2>Peak Listening Hours</h2>
+                            <span class="time-filter">Timezone: EST</span>
+                        </div>
+                        <div class="time-distribution">
+                            <div class="time-slot">
+                                <div class="time-label">Morning</div>
+                                <div class="time-value">6-12</div>
+                                <div style="font-size: 12px; color: #667eea;">24%</div>
+                            </div>
+                            <div class="time-slot active">
+                                <div class="time-label">Afternoon</div>
+                                <div class="time-value">12-18</div>
+                                <div style="font-size: 12px;">38%</div>
+                            </div>
+                            <div class="time-slot">
+                                <div class="time-label">Evening</div>
+                                <div class="time-value">18-24</div>
+                                <div style="font-size: 12px; color: #667eea;">28%</div>
+                            </div>
+                            <div class="time-slot">
+                                <div class="time-label">Night</div>
+                                <div class="time-value">0-6</div>
+                                <div style="font-size: 12px; color: #667eea;">10%</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 30px;">
+                            <h3 style="font-size: 16px; margin-bottom: 15px;">Most Active Day</h3>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 24px; font-weight: 700; color: #667eea;">Friday</span>
+                                <span style="color: #666;">2.8x more streams than average</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Region Map Visualization -->
+                <div class="analytics-card">
+                    <div class="card-header">
+                        <h2>Global Listening Distribution</h2>
+                        <span class="time-filter">View all regions →</span>
+                    </div>
+                    <div class="region-grid">
+                        <div class="region-item">
+                            <div class="region-flag">🇺🇸</div>
+                            <div class="region-name">United States</div>
+                            <div class="region-percentage">42%</div>
+                            <div class="region-listeners">892K listeners</div>
+                        </div>
+                        <div class="region-item">
+                            <div class="region-flag">🇬🇧</div>
+                            <div class="region-name">United Kingdom</div>
+                            <div class="region-percentage">18%</div>
+                            <div class="region-listeners">382K listeners</div>
+                        </div>
+                        <div class="region-item">
+                            <div class="region-flag">🇨🇦</div>
+                            <div class="region-name">Canada</div>
+                            <div class="region-percentage">12%</div>
+                            <div class="region-listeners">255K listeners</div>
+                        </div>
+                        <div class="region-item">
+                            <div class="region-flag">🇦🇺</div>
+                            <div class="region-name">Australia</div>
+                            <div class="region-percentage">8%</div>
+                            <div class="region-listeners">170K listeners</div>
+                        </div>
+                        <div class="region-item">
+                            <div class="region-flag">🇩🇪</div>
+                            <div class="region-name">Germany</div>
+                            <div class="region-percentage">6%</div>
+                            <div class="region-listeners">127K listeners</div>
+                        </div>
+                        <div class="region-item">
+                            <div class="region-flag">🇫🇷</div>
+                            <div class="region-name">France</div>
+                            <div class="region-percentage">5%</div>
+                            <div class="region-listeners">106K listeners</div>
+                        </div>
+                        <div class="region-item">
+                            <div class="region-flag">🇧🇷</div>
+                            <div class="region-name">Brazil</div>
+                            <div class="region-percentage">4%</div>
+                            <div class="region-listeners">85K listeners</div>
+                        </div>
+                        <div class="region-item">
+                            <div class="region-flag">🇯🇵</div>
+                            <div class="region-name">Japan</div>
+                            <div class="region-percentage">3%</div>
+                            <div class="region-listeners">64K listeners</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Demographics Tab -->
+            <div id="demographics" class="tab-content">
+                <div class="analytics-row">
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h2>Age Distribution</h2>
+                        </div>
+                        <div class="demographic-item">
+                            <div class="demographic-header">
+                                <span>13-17</span>
+                                <span>15%</span>
+                            </div>
+                            <div class="demographic-bar">
+                                <div class="demographic-fill" style="width: 15%">15%</div>
+                            </div>
+                        </div>
+                        <div class="demographic-item">
+                            <div class="demographic-header">
+                                <span>18-24</span>
+                                <span>42%</span>
+                            </div>
+                            <div class="demographic-bar">
+                                <div class="demographic-fill" style="width: 42%">42%</div>
+                            </div>
+                        </div>
+                        <div class="demographic-item">
+                            <div class="demographic-header">
+                                <span>25-34</span>
+                                <span>28%</span>
+                            </div>
+                            <div class="demographic-bar">
+                                <div class="demographic-fill" style="width: 28%">28%</div>
+                            </div>
+                        </div>
+                        <div class="demographic-item">
+                            <div class="demographic-header">
+                                <span>35-44</span>
+                                <span>10%</span>
+                            </div>
+                            <div class="demographic-bar">
+                                <div class="demographic-fill" style="width: 10%">10%</div>
+                            </div>
+                        </div>
+                        <div class="demographic-item">
+                            <div class="demographic-header">
+                                <span>45+</span>
+                                <span>5%</span>
+                            </div>
+                            <div class="demographic-bar">
+                                <div class="demographic-fill" style="width: 5%">5%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h2>Gender Distribution</h2>
+                        </div>
+                        <div class="demographic-item">
+                            <div class="demographic-header">
+                                <span>Female</span>
+                                <span>68%</span>
+                            </div>
+                            <div class="demographic-bar">
+                                <div class="demographic-fill" style="width: 68%; background: linear-gradient(90deg, #ff6b6b, #feca57);">68%</div>
+                            </div>
+                        </div>
+                        <div class="demographic-item">
+                            <div class="demographic-header">
+                                <span>Male</span>
+                                <span>28%</span>
+                            </div>
+                            <div class="demographic-bar">
+                                <div class="demographic-fill" style="width: 28%; background: linear-gradient(90deg, #48dbfb, #667eea);">28%</div>
+                            </div>
+                        </div>
+                        <div class="demographic-item">
+                            <div class="demographic-header">
+                                <span>Non-binary</span>
+                                <span>4%</span>
+                            </div>
+                            <div class="demographic-bar">
+                                <div class="demographic-fill" style="width: 4%; background: linear-gradient(90deg, #764ba2, #ff9ff3);">4%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analytics-card">
+                    <div class="card-header">
+                        <h2>Top Cities</h2>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                        <div>
+                            <div class="song-row">
+                                <span class="song-rank">1</span>
+                                <div class="song-info">
+                                    <div class="song-name">New York City</div>
+                                    <div class="song-album">United States</div>
+                                </div>
+                                <div class="song-stats">
+                                    <div class="song-plays">124K</div>
+                                    <div class="song-trend">listeners</div>
+                                </div>
+                            </div>
+                            <div class="song-row">
+                                <span class="song-rank">2</span>
+                                <div class="song-info">
+                                    <div class="song-name">London</div>
+                                    <div class="song-album">United Kingdom</div>
+                                </div>
+                                <div class="song-stats">
+                                    <div class="song-plays">98K</div>
+                                    <div class="song-trend">listeners</div>
+                                </div>
+                            </div>
+                            <div class="song-row">
+                                <span class="song-rank">3</span>
+                                <div class="song-info">
+                                    <div class="song-name">Los Angeles</div>
+                                    <div class="song-album">United States</div>
+                                </div>
+                                <div class="song-stats">
+                                    <div class="song-plays">87K</div>
+                                    <div class="song-trend">listeners</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="song-row">
+                                <span class="song-rank">4</span>
+                                <div class="song-info">
+                                    <div class="song-name">Toronto</div>
+                                    <div class="song-album">Canada</div>
+                                </div>
+                                <div class="song-stats">
+                                    <div class="song-plays">76K</div>
+                                    <div class="song-trend">listeners</div>
+                                </div>
+                            </div>
+                            <div class="song-row">
+                                <span class="song-rank">5</span>
+                                <div class="song-info">
+                                    <div class="song-name">Sydney</div>
+                                    <div class="song-album">Australia</div>
+                                </div>
+                                <div class="song-stats">
+                                    <div class="song-plays">65K</div>
+                                    <div class="song-trend">listeners</div>
+                                </div>
+                            </div>
+                            <div class="song-row">
+                                <span class="song-rank">6</span>
+                                <div class="song-info">
+                                    <div class="song-name">Chicago</div>
+                                    <div class="song-album">United States</div>
+                                </div>
+                                <div class="song-stats">
+                                    <div class="song-plays">54K</div>
+                                    <div class="song-trend">listeners</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Songs Tab -->
+            <div id="songs" class="tab-content">
+                <div class="analytics-card">
+                    <div class="card-header">
+                        <h2>Most Streamed Songs</h2>
+                        <select class="time-filter">
+                            <option>Last 30 days</option>
+                            <option>Last 90 days</option>
+                            <option>All time</option>
+                        </select>
+                    </div>
+                    <div class="songs-table">
+                        <div class="song-row">
+                            <span class="song-rank">1</span>
+                            <div class="song-info">
+                                <div class="song-name">Anti-Hero</div>
+                                <div class="song-album">Midnights</div>
+                            </div>
+                            <div class="song-stats">
+                                <div class="song-plays">2.4M</div>
+                                <div class="song-trend">↑ 24%</div>
+                            </div>
+                        </div>
+                        <div class="song-row">
+                            <span class="song-rank">2</span>
+                            <div class="song-info">
+                                <div class="song-name">Cruel Summer</div>
+                                <div class="song-album">Lover</div>
+                            </div>
+                            <div class="song-stats">
+                                <div class="song-plays">1.8M</div>
+                                <div class="song-trend">↑ 156%</div>
+                            </div>
+                        </div>
+                        <div class="song-row">
+                            <span class="song-rank">3</span>
+                            <div class="song-info">
+                                <div class="song-name">Shake It Off</div>
+                                <div class="song-album">1989</div>
+                            </div>
+                            <div class="song-stats">
+                                <div class="song-plays">1.5M</div>
+                                <div class="song-trend">↓ 2%</div>
+                            </div>
+                        </div>
+                        <div class="song-row">
+                            <span class="song-rank">4</span>
+                            <div class="song-info">
+                                <div class="song-name">Blank Space</div>
+                                <div class="song-album">1989</div>
+                            </div>
+                            <div class="song-stats">
+                                <div class="song-plays">1.3M</div>
+                                <div class="song-trend">↑ 8%</div>
+                            </div>
+                        </div>
+                        <div class="song-row">
+                            <span class="song-rank">5</span>
+                            <div class="song-info">
+                                <div class="song-name">Love Story</div>
+                                <div class="song-album">Fearless</div>
+                            </div>
+                            <div class="song-stats">
+                                <div class="song-plays">1.1M</div>
+                                <div class="song-trend">↑ 5%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                    <div class="analytics-card">
+                        <h3 style="margin-bottom: 15px;">Top by Region</h3>
+                        <div class="song-row">
+                            <span class="song-rank">🇺🇸</span>
+                            <div class="song-info">
+                                <div class="song-name">Anti-Hero</div>
+                            </div>
+                            <div class="song-stats">1.2M</div>
+                        </div>
+                        <div class="song-row">
+                            <span class="song-rank">🇬🇧</span>
+                            <div class="song-info">
+                                <div class="song-name">Cruel Summer</div>
+                            </div>
+                            <div class="song-stats">892K</div>
+                        </div>
+                        <div class="song-row">
+                            <span class="song-rank">🇨🇦</span>
+                            <div class="song-info">
+                                <div class="song-name">Shake It Off</div>
+                            </div>
+                            <div class="song-stats">654K</div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3 style="margin-bottom: 15px;">Discovery Rate</h3>
+                        <div style="text-align: center;">
+                            <div style="font-size: 48px; font-weight: 700; color: #667eea;">34%</div>
+                            <div style="color: #666; margin-bottom: 20px;">of listeners are new</div>
+                            <div style="background: #f0f0f0; height: 10px; border-radius: 5px; overflow: hidden;">
+                                <div style="width: 34%; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Engagement Tab -->
+            <div id="engagement" class="tab-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">❤️</div>
+                        <h3>Total Likes</h3>
+                        <div class="stat-main">3.2M</div>
+                        <div class="stat-trend">↑ 18% from last month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💬</div>
+                        <h3>Comments</h3>
+                        <div class="stat-main">847K</div>
+                        <div class="stat-trend">↑ 12% from last month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔄</div>
+                        <h3>Shares</h3>
+                        <div class="stat-main">1.1M</div>
+                        <div class="stat-trend">↑ 24% from last month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">➕</div>
+                        <h3>Playlist Adds</h3>
+                        <div class="stat-main">2.5M</div>
+                        <div class="stat-trend">↑ 15% from last month</div>
+                    </div>
+                </div>
+
+                <div class="analytics-row">
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h2>Engagement by Region</h2>
+                        </div>
+                        <div class="bar-chart">
+                            <div class="bar-item">
+                                <span class="bar-label">🇺🇸 United States</span>
+                                <div class="bar-container">
+                                    <div class="bar-fill" style="width: 78%; background: linear-gradient(90deg, #ff6b6b, #feca57);">78%</div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <span class="bar-label">🇬🇧 United Kingdom</span>
+                                <div class="bar-container">
+                                    <div class="bar-fill" style="width: 65%; background: linear-gradient(90deg, #ff6b6b, #feca57);">65%</div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <span class="bar-label">🇨🇦 Canada</span>
+                                <div class="bar-container">
+                                    <div class="bar-fill" style="width: 52%; background: linear-gradient(90deg, #ff6b6b, #feca57);">52%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h2>Fan Retention Rate</h2>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 48px; font-weight: 700; color: #10b981;">87%</div>
+                            <div style="color: #666;">Listeners return within 30 days</div>
+                            <div style="margin-top: 20px; display: flex; justify-content: space-around;">
+                                <div>
+                                    <div style="font-size: 20px; font-weight: 700;">24%</div>
+                                    <div style="font-size: 12px; color: #666;">Super Fans</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 20px; font-weight: 700;">63%</div>
+                                    <div style="font-size: 12px; color: #666;">Regulars</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 20px; font-weight: 700;">13%</div>
+                                    <div style="font-size: 12px; color: #666;">Casual</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            var tabContents = document.getElementsByClassName('tab-content');
+            for (var i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            // Remove active class from all tabs
+            var tabs = document.getElementsByClassName('tab');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .functions.file_manager import create_song
 from .functions.search_function import search, sort_songs
 from .forms import UserForm,ProfileForm
-from .models import Song, Genre, Album
+from .models import Song, Genre, Album, User, Profile
 
 def landing(request):
 
@@ -51,7 +51,7 @@ def signin(request):
         if user:
             if user.is_active:
                 login(request,user)
-                return redirect(reverse('soundbytes:landing'))
+                return redirect(reverse('soundbytes:home'))
             else:
                 return HttpResponse("Your Soundbytes account is diabled")
         else:
@@ -67,10 +67,7 @@ def signout(request):
     return redirect(reverse('soundbytes:landing'))
 
 def home(request):
-    return redirect(reverse('soundbytes_base/home.html'))
-
-def profile(request):
-    return redirect(reverse('soundbytes_base/profile.html'))
+    return render(request,'soundbytes_auth/home.html')
 
 
 @csrf_exempt
@@ -157,3 +154,53 @@ def trending_page(request):
     #displays top 10 songs
     songs = sorted(songs, key=lambda x: x.score, reverse=True)[:10]
     return render(request, 'soundbytes_auth/trending.html', {'songs': songs})
+
+# Update your profile_view to include analytics
+def profile(request, username):
+    user = get_object_or_404(User, username=username)
+    profile = user.profile
+    
+    # Increment profile views
+    if request.user.is_authenticated and request.user != user:
+        profile.profile_views += 1
+        profile.save(update_fields=['profile_views'])
+    
+    # Check if user is following
+    is_following = request.user.is_authenticated and request.user in profile.followers.all()
+    
+    # Get analytics data (only for artists)
+    analytics = get_analytics_context(user) if profile.is_artist() else None
+    
+    context = {
+        #'profile_user': user,
+        #'profile': profile,
+        #'is_own_profile': request.user.is_authenticated and request.user == user,
+        #'is_following': is_following,
+        #'analytics': analytics,
+        #'demographics': get_demographics() if profile.is_artist() else None,
+        #'top_songs': get_top_songs() if profile.is_artist() else None,
+        #'engagement': get_engagement() if profile.is_artist() else None,
+    }
+    return render(request, 'soundbytes_auth/analytics.html' if profile.is_artist() else 'soundbytes_auth/profile.html', context)
+
+def get_analytics_context(user):
+    """Generate analytics data for an artist"""
+    from django.db.models import Sum, Count
+    
+    # This is mock data - replace with actual database queries
+    return {
+        'monthly_listeners': '78.4M',
+        'countries': '156',
+        'total_hours': '2.4M',
+        'total_streams': '18.2M',
+        'new_listeners': '342K',
+        'top_region': 'United States',
+        'top_region_percent': 42,
+        'top_regions': [
+            {'flag': '🇺🇸', 'name': 'United States', 'percent': 82},
+            {'flag': '🇬🇧', 'name': 'United Kingdom', 'percent': 67},
+        ],
+        'discovery_rate': 34,
+        'active_day': 'Friday',
+        'active_day_multiplier': '2.8',
+    }

@@ -22,15 +22,10 @@ from soundbytes import views
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('soundbytes.urls')),
-    path('profile/<str:username>/', views.profile_view, name='profile'),
-    path('profile/<str:username>/follow/', views.follow_user, name='follow_user'),
-    path('profile/edit/', views.profile_edit, name='profile_edit'),
-    path('analytics/<str:username>/', views.analytics_view, name='analytics'),
 ]
 
 if settings.DEBUG:

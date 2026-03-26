@@ -9,7 +9,6 @@ urlpatterns = [
     path('signin/',views.signin,name='signin'),
     path('signup/', views.signup, name='signup'),
     path('home/', views.home, name='home'),
-    path('profile/', views.profile, name='profile'),
     path('signout/', views.signout, name='signout'),
     path('upload/', views.upload_song),
     path('search/', views.search_songs),
@@ -20,4 +19,8 @@ urlpatterns = [
     path('album/<int:album_id>/', views.album_page, name='album_page'),
     path('stream/<int:song_id>/', views.stream_song, name='stream_song'),
     path('trending/', views.trending_page, name='trending'),
+    path('profile/<str:username>/', views.profile, name='profile'),
+    #path('profile/<str:username>/follow/', views.follow_user, name='follow_user'),
+    #path('profile/edit/', views.profile_edit, name='profile_edit'),
+    #path('analytics/<str:username>/', views.analytics, name='analytics'),
 ] 
