@@ -25,6 +25,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', include('onboarding.urls')),
+    path('', include('soundbytes.urls')),
     path('admin/', admin.site.urls),
 ]
 
