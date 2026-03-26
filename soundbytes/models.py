@@ -124,3 +124,9 @@ class Song(models.Model):
 
     def __str__(self):
         return self.title
+    
+class Post(models.Model):
+    text_content = models.TextField(blank=True)
+    image = models.ImageField(upload_to='posts/', blank=True, null=True)
+    like_count = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)

@@ -1,10 +1,30 @@
-<h1>Trending Songs</h1>
+<h1>Trending</h1>
 
-{% for song in songs %}
-    <div>
-        <p>{{ song.title }} - {{ song.artist }}</p>
-        <audio controls>
-            <source src="{% url 'stream_song' song.id %}" type="audio/mpeg">
-        </audio>
-    </div>
+{% for item in results %}
+
+    {% if item.type == 'song' %}
+        <div>
+            <p>{{ item.data.title }} - {{ item.data.artist }}</p>
+
+            <p>Likes: {{ item.data.like_count }}</p>
+
+            <audio controls>
+                <source src="{% url 'stream_song' item.data.id %}" type="audio/mpeg">
+            </audio>
+        </div>
+
+    {% elif item.type == 'post' %}
+        <div>
+            {% if item.data.text_content %}
+                <p>{{ item.data.text_content }}</p>
+            {% endif %}
+
+            {% if item.data.image %}
+                <img src="{{ item.data.image.url }}" width="200">
+            {% endif %}
+
+            <p>Likes: {{ item.data.like_count }}</p>
+        </div>
+    {% endif %}
+
 {% endfor %}
