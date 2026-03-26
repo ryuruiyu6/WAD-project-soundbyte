@@ -1,6 +1,12 @@
 <form method="GET" action="/search-page/">
     <input type="text" name="q" placeholder="Search...">
 
+    <select name="type">
+        <option value="all">All</option>
+        <option value="songs">Songs</option>
+        <option value="posts">Posts</option>
+    </select>
+
     <select name="genre">
         <option value="">All</option>
         {% for genre in genres %}
@@ -9,11 +15,10 @@
     </select>
 
     <select name="sort">
-        <option value="">Default</option>
+        <option value="">Newest</option>
         <option value="views">Most Viewed</option>
         <option value="downloads">Most Downloaded</option>
         <option value="likes">Most Liked</option>
-        <option value="new">Newest</option>
     </select>
 
     <button type="submit">Search</button>
@@ -21,28 +26,46 @@
 
 <h2>Results:</h2>
 
-{% for song in songs %}
-    <div>
-        <h3>{{ song.title }}</h3>
-        <p>{{ song.artist }}</p>
-        <p>
-            Album:
-            <a href="{% url 'album_page' song.album.id %}">
-                {{ song.album.title }}
-            </a>
-        </p>
+{% for item in results %}
+    {% if item.type == 'song' %}
+        <div>
+            <h3>{{ item.data.title }}</h3>
+            <p>{{ item.data.artist }}</p>
 
-        <p>
-            Genres:
-            {% for genre in song.genres.all %}
-                {{ genre.name }}{% if not forloop.last %}, {% endif %}
-            {% endfor %}
-        </p>
+            <p>
+                Album:
+                <a href="{% url 'album_page' item.data.album.id %}">
+                    {{ item.data.album.title }}
+                </a>
+            </p>
 
-        <p>Tags: {{ song.tags }}</p>
+            <p>
+                Genres:
+                {% for genre in item.data.genres.all %}
+                    {{ genre.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
 
-        <audio controls>
-            <source src="{% url 'stream_song' song.id %}" type="audio/mpeg">
-        </audio>
-    </div>
+            <p>Tags: {{ item.data.tags }}</p>
+
+            <p>Likes: {{ item.data.like_count }}</p>
+
+            <audio controls>
+                <source src="{% url 'stream_song' item.data.id %}" type="audio/mpeg">
+            </audio>
+        </div>
+
+    {% elif item.type == 'post' %}
+        <div>
+            {% if item.data.text_content %}
+                <p>{{ item.data.text_content }}</p>
+            {% endif %}
+
+            {% if item.data.image %}
+                <img src="{{ item.data.image.url }}" width="200">
+            {% endif %}
+
+            <p>Likes: {{ item.data.like_count }}</p>
+        </div>
+    {% endif %}
 {% endfor %}

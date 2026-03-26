@@ -1,27 +1,54 @@
-
-
 <form action="/upload/" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    
-    <input type="text" name="title" placeholder="Title"><br>
-    <input type="text" name="artist" placeholder="Artist"><br>
 
-    <select name="album">
-        <option value="">Select Album</option>
-        {% for album in albums %}
-            <option value="{{ album.id }}">{{ album.title }}</option>
-        {% endfor %}
+    <!-- TYPE SELECTOR -->
+    <label>Upload Type:</label>
+    <select name="content_type" id="content_type" onchange="toggleFields()">
+        <option value="song">Song</option>
+        <option value="post">Post</option>
     </select>
+    <br><br>
 
-    <select name="genres" multiple>
-        {% for genre in genres %}
-            <option value="{{ genre.id }}">{{ genre.name }}</option>
-        {% endfor %}
-    </select>
-    
-    <input type="text" name="tags" placeholder="Tags"><br>
+    <!-- SONG FIELDS -->
+    <div id="song_fields">
+        <input type="text" name="title" placeholder="Title"><br>
+        <input type="text" name="artist" placeholder="Artist"><br>
 
-    <input type="file" name="audio_file"><br>
+        <select name="album">
+            <option value="">Select Album</option>
+            {% for album in albums %}
+                <option value="{{ album.id }}">{{ album.title }}</option>
+            {% endfor %}
+        </select><br>
+
+        <select name="genres" multiple>
+            {% for genre in genres %}
+                <option value="{{ genre.id }}">{{ genre.name }}</option>
+            {% endfor %}
+        </select><br>
+
+        <input type="text" name="tags" placeholder="Tags"><br>
+
+        <input type="file" name="audio_file"><br>
+    </div>
+
+    <!-- POST FIELDS -->
+    <div id="post_fields" style="display:none;">
+        <textarea name="text_content" placeholder="Write something..."></textarea><br>
+        <input type="file" name="image_file"><br>
+    </div>
 
     <button type="submit">Upload</button>
 </form>
+
+<script>
+function toggleFields() {
+    const type = document.getElementById("content_type").value;
+
+    document.getElementById("song_fields").style.display =
+        (type === "song") ? "block" : "none";
+
+    document.getElementById("post_fields").style.display =
+        (type === "post") ? "block" : "none";
+}
+</script>
