@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .functions.file_manager import create_song
 from .functions.search_function import search, sort_songs
 from .forms import UserForm,ProfileForm
-from .models import Comment, Download, Follow, Genre, Like, Song, Album, User, Profile, Post, ProfileView
+from .models import Comment, Download, Follow, Genre, Like, Song, Album, User, Profile, Post, ProfileView, Playlist
 
 def landing(request):
 
@@ -205,7 +205,7 @@ def trending_page(request):
     return render(request, 'soundbytes_auth/trending.html', {'results': results})
 
 def top_page(request):
-    return render(request)
+    return render(request, 'soundbytes_auth/top.html')
 
 def upload(request):
     print("UPLOAD ROUTER HIT")
@@ -303,7 +303,6 @@ def get_analytics_context(user):
         'active_day_multiplier': '2.8',
     }
 
-
 def download_song(request, song_id):
     song = get_object_or_404(Song, id=song_id)
     Download.objects.create(
@@ -389,3 +388,16 @@ def creator_dashboard(request):
         'profile_view_count': ProfileView.objects.filter(profile_user=request.user).count(),
     }
     return JsonResponse(summary)
+
+def playlists(request, username):
+    user = get_object_or_404(User, username=username)
+    profile = user.profile
+    playlist_list = []
+    playlists = Playlist.objects.all()
+    for playlist in playlists:
+        playlist_list.append(playlist.playlist_title)
+    context = {
+            'user': user,
+            'playlists': playlist_list
+    }
+    return render(request, 'soundbytes_auth/playlists.html', context)
