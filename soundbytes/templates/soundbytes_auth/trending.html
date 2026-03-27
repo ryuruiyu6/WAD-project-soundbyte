@@ -1,16 +1,38 @@
+{% extends 'authbase.html' %}
+
+{% block title %}Trending{% endblock %}
+
+{% block body %}
+<div class="content-card">
 <h1>Trending</h1>
 
 {% for item in results %}
     <div style="border:1px solid #ccc; padding:15px; margin:15px 0; border-radius:8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: table;">
         {% if item.type == 'song' %}
             <div>
-                <p>{{ item.data.title }} - {{ item.data.artist }}</p>
+                <p>
+                    {{ item.data.title }} -
+                    <a href="{% url 'soundbytes:profile' item.data.artist %}">{{ item.data.artist }}</a>
+                </p>
 
+                <p>Views: {{ item.data.view_count }}</p>
+                <p>Downloads: {{ item.data.download_count }}</p>
                 <p>Likes: {{ item.data.like_count }}</p>
+
+                <p>
+                    <a href="{% url 'soundbytes:download_song' item.data.id %}">Download</a>
+                </p>
 
                 <audio controls>
                     <source src="{% url 'soundbytes:stream_song' item.data.id %}" type="audio/mpeg">
                 </audio>
+
+                {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'soundbytes:toggle_like' item.data.id %}" style="margin-top:10px;">
+                        {% csrf_token %}
+                        <button type="submit">Like / Unlike</button>
+                    </form>
+                {% endif %}
             </div>
 
         {% elif item.type == 'post' %}
@@ -28,3 +50,5 @@
         {% endif %}
     </div>
 {% endfor %}
+</div>
+{% endblock %}

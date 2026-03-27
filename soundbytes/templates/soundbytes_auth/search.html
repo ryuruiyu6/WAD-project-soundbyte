@@ -1,3 +1,9 @@
+{% extends 'authbase.html' %}
+
+{% block title %}Search{% endblock %}
+
+{% block body %}
+<div class="content-card">
 <form method="GET" action="/search-page/">
     <input type="text" name="q" placeholder="Search...">
 
@@ -31,7 +37,12 @@
         {% if item.type == 'song' %}
             <div>
                 <h3>{{ item.data.title }}</h3>
-                <p>{{ item.data.artist }}</p>
+                <p>
+                    Artist:
+                    <a href="{% url 'soundbytes:profile' item.data.artist %}">
+                        {{ item.data.artist }}
+                    </a>
+                </p>
 
                 <p>
                     Album:
@@ -49,11 +60,41 @@
 
                 <p>Tags: {{ item.data.tags }}</p>
 
+                <p>Views: {{ item.data.view_count }}</p>
+                <p>Downloads: {{ item.data.download_count }}</p>
                 <p>Likes: {{ item.data.like_count }}</p>
+
+                <p>
+                    <a href="{% url 'soundbytes:download_song' item.data.id %}">Download</a>
+                </p>
 
                 <audio controls>
                     <source src="{% url 'soundbytes:stream_song' item.data.id %}" type="audio/mpeg">
                 </audio>
+
+                {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'soundbytes:toggle_like' item.data.id %}" style="margin-top:10px;">
+                        {% csrf_token %}
+                        <button type="submit">Like / Unlike</button>
+                    </form>
+
+                    <form method="post" action="{% url 'soundbytes:add_comment' item.data.id %}" style="margin-top:10px;">
+                        {% csrf_token %}
+                        <input type="text" name="body" placeholder="Add a comment">
+                        <button type="submit">Comment</button>
+                    </form>
+                {% endif %}
+
+                {% if item.data.comments.all %}
+                    <div style="margin-top:10px;">
+                        <strong>Comments</strong>
+                        {% for comment in item.data.comments.all|slice:":5" %}
+                            <p>{{ comment.user.username }}: {{ comment.body }}</p>
+                        {% empty %}
+                            <p>No comments yet.</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
 
         {% elif item.type == 'post' %}
@@ -71,3 +112,5 @@
         {% endif %}
     </div>
 {% endfor %}
+</div>
+{% endblock %}
