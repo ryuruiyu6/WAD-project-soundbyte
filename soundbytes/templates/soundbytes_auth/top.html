@@ -1,0 +1,172 @@
+{% extends 'authbase.html' %}
+{% load static %}
+
+{% block title %}Trending - SoundByte{% endblock %}
+
+{% block body %}
+<div class="content-card">
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <h1>🔥 Trending Now</h1>
+        <p style="color: #666;">What's hot on SoundByte right now</p>
+    </div>
+    
+    <div style="margin-bottom: 1rem;">
+        <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+            <select id="trending-filter" style="padding: 0.5rem; border-radius: 5px; border: 1px solid #ddd;">
+                <option value="all">All Content</option>
+                <option value="songs">Songs</option>
+                <option value="posts">Posts</option>
+            </select>
+            <select id="trending-time" style="padding: 0.5rem; border-radius: 5px; border: 1px solid #ddd;">
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+                <option value="month">This Month</option>
+                <option value="all">All Time</option>
+            </select>
+        </div>
+    </div>
+
+    {% for item in results %}
+        <div class="trending-item" style="border:1px solid #e0e0e0; padding:20px; margin:15px 0; border-radius:12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.3s;" data-type="{{ item.type }}">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                <div class="trending-rank" style="font-size: 1.5rem; font-weight: bold; min-width: 50px;">
+                    {% if forloop.counter == 1 %}🔥 #1
+                    {% elif forloop.counter == 2 %}📈 #2
+                    {% elif forloop.counter == 3 %}⭐ #3
+                    {% else %}#{{ forloop.counter }}{% endif %}
+                </div>
+                <div style="flex: 1;">
+                    {% if item.type == 'song' %}
+                        <div style="font-size: 1.2rem; font-weight: bold;">{{ item.data.title }}</div>
+                        <div style="color: #666;">
+                            by <a href="{% url 'soundbytes:profile' item.data.artist %}" style="color: #667eea; text-decoration: none;">{{ item.data.artist }}</a>
+                        </div>
+                    {% elif item.type == 'post' %}
+                        <div style="color: #333;">{{ item.data.text_content|truncatechars:150 }}</div>
+                        <div style="color: #666; font-size: 0.85rem;">
+                            by {{ item.data.user.username }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div style="text-align: right;">
+                    {% if item.score %}
+                        <div style="font-size: 1.2rem; font-weight: bold; color: #667eea;">{{ item.score }}</div>
+                        <div style="font-size: 0.75rem; color: #888;">trending score</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if item.type == 'song' %}
+                <div style="margin: 1rem 0;">
+                    <div style="display: flex; gap: 1rem; margin-bottom: 0.5rem;">
+                        <span class="stat-badge">🎧 {{ item.data.view_count|default:0 }} plays</span>
+                        <span class="stat-badge">❤️ {{ item.data.like_count|default:0 }} likes</span>
+                        <span class="stat-badge">📥 {{ item.data.download_count|default:0 }} downloads</span>
+                    </div>
+                    <audio controls preload="none">
+                        <source src="{% url 'soundbytes:stream_song' item.data.id %}" type="audio/mpeg">
+                    </audio>
+                </div>
+                
+                {% if user.is_authenticated %}
+                    <div style="margin-top: 10px;">
+                        <form method="post" action="{% url 'soundbytes:toggle_like' item.data.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-secondary">❤️ Like / Unlike</button>
+                        </form>
+                        <a href="{% url 'soundbytes:download_song' item.data.id %}" class="btn btn-primary" style="margin-left: 0.5rem;">📥 Download</a>
+                    </div>
+                {% endif %}
+                
+            {% elif item.type == 'post' %}
+                <div style="margin-top: 0.5rem;">
+                    {% if item.data.image %}
+                        <img src="{{ item.data.image.url }}" style="max-width: 200px; border-radius: 8px; margin-top: 0.5rem;">
+                    {% endif %}
+                    <div style="margin-top: 0.5rem;">
+                        <span class="stat-badge">❤️ {{ item.data.like_count|default:0 }} likes</span>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% empty %}
+        <div style="text-align: center; padding: 3rem; color: #999; background: #fafafa; border-radius: 8px; border: 1px dashed #ccc;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+            <p>No trending content at the moment</p>
+            <small>Check back later for hot new music!</small>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+    $(document).ready(function() {
+        // Filter trending items
+        $('#trending-filter').change(function() {
+            const filter = $(this).val();
+            if (filter === 'all') {
+                $('.trending-item').show();
+            } else {
+                $('.trending-item').hide();
+                $(`.trending-item[data-type="${filter}"]`).show();
+            }
+        });
+        
+        // Add hover effect
+        $('.trending-item').hover(
+            function() {
+                $(this).css({
+                    'border-color': '#667eea',
+                    'transform': 'translateX(5px)',
+                    'box-shadow': '0 4px 12px rgba(102,126,234,0.1)'
+                });
+            },
+            function() {
+                $(this).css({
+                    'border-color': '#e0e0e0',
+                    'transform': 'translateX(0)',
+                    'box-shadow': '0 2px 8px rgba(0,0,0,0.05)'
+                });
+            }
+        );
+        
+        // Animate items on load
+        $('.trending-item').each(function(index) {
+            $(this).hide().delay(index * 100).fadeIn(300);
+        });
+    });
+</script>
+
+<style>
+    .stat-badge {
+        background: #e8e8e8;
+        padding: 0.2rem 0.6rem;
+        border-radius: 4px;
+        font-size: 0.85rem;
+    }
+    
+    .btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 5px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .btn-secondary {
+        background: #f0f0f0;
+        color: #333;
+    }
+    
+    .btn-primary:hover, .btn-secondary:hover {
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
