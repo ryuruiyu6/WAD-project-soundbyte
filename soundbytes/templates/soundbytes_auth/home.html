@@ -1,10 +1,76 @@
 {% extends 'authbase.html' %}
 {% load static %}
 
-{% block title %}
-	Sign-Up
-{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block body %}
-	<h1>Welcome to Soundbytes!</h1>
+<div class="content-card">
+    <h1>{% if user.is_authenticated %}Welcome back, {{ user.username }}.{% else %}Welcome to Soundbytes.{% endif %}</h1>
+    <p>Jump into recent uploads, discover what is trending, or head straight to your profile.</p>
+
+    <div class="home-actions">
+        <a href="{% url 'soundbytes:search_page' %}" class="action-btn">Browse songs</a>
+        <a href="{% url 'soundbytes:trending' %}" class="action-btn">Open trending</a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'soundbytes:profile' user.username %}" class="action-btn">Open profile</a>
+        {% else %}
+            <a href="{% url 'soundbytes:signin' %}" class="action-btn">Sign in</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="content-card">
+    <h2>Recent songs</h2>
+    {% for song in recent_songs %}
+        <div class="song-list-item">
+            <div>
+                <strong>{{ song.title }}</strong>
+                <p>by <a href="{% url 'soundbytes:profile' song.artist %}">{{ song.artist }}</a></p>
+            </div>
+            <div>
+                <span>{{ song.view_count }} views</span>
+                <span>{{ song.download_count }} downloads</span>
+                <span>{{ song.like_count }} likes</span>
+            </div>
+        </div>
+    {% empty %}
+        <p>No songs uploaded yet.</p>
+    {% endfor %}
+</div>
+
+<div class="content-card">
+    <h2>Trending now</h2>
+    {% for song in trending_songs %}
+        <div class="song-list-item">
+            <div>
+                <strong>{{ song.title }}</strong>
+                <p>by <a href="{% url 'soundbytes:profile' song.artist %}">{{ song.artist }}</a></p>
+            </div>
+            <div>
+                <span>{{ song.view_count }} views</span>
+                <span>{{ song.download_count }} downloads</span>
+                <span>{{ song.like_count }} likes</span>
+            </div>
+        </div>
+    {% empty %}
+        <p>No trending songs yet.</p>
+    {% endfor %}
+</div>
+
+<div class="content-card">
+    <h2>Recent posts</h2>
+    {% for post in recent_posts %}
+        <div class="post-card">
+            {% if post.text_content %}
+                <p>{{ post.text_content }}</p>
+            {% endif %}
+            {% if post.image %}
+                <img src="{{ post.image.url }}" alt="post image" class="post-image">
+            {% endif %}
+            <p>{{ post.like_count }} likes</p>
+        </div>
+    {% empty %}
+        <p>No posts yet.</p>
+    {% endfor %}
+</div>
 {% endblock %}

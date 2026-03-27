@@ -39,6 +39,44 @@ margin-bottom: 16px;
 margin-bottom: 12px;
 }
 
+.home-actions {
+display: flex;
+gap: 12px;
+flex-wrap: wrap;
+margin-top: 16px;
+}
+
+.song-list-item {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 16px;
+padding: 14px 0;
+border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.song-list-item:last-child {
+border-bottom: none;
+}
+
+.song-list-item span {
+display: inline-block;
+margin-left: 12px;
+color: #555;
+}
+
+.post-card {
+background: rgba(102, 126, 234, 0.06);
+border-radius: 14px;
+padding: 16px;
+}
+
+.post-image {
+max-width: 280px;
+border-radius: 12px;
+display: block;
+}
+
 .analytics-container {
 max-width: 1200px;
 width: 100%;

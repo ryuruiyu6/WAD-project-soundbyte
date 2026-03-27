@@ -1,0 +1,100 @@
+/* album.css - Album page styling */
+
+.album-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    color: white;
+}
+
+.album-cover {
+    width: 200px;
+    height: 200px;
+    border-radius: 12px;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.album-title {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.album-artist {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.songs-list {
+    margin-top: 2rem;
+}
+
+.song-item {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s;
+}
+
+.song-item:hover {
+    border-color: #667eea;
+    transform: translateX(5px);
+}
+
+.song-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+.song-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.song-duration {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.song-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.like-btn, .download-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    transition: all 0.2s;
+}
+
+.like-btn {
+    color: #ff6b6b;
+}
+
+.like-btn.liked {
+    background: #ff6b6b;
+    color: white;
+}
+
+.download-btn {
+    color: #667eea;
+}
+
+.download-btn:hover {
+    background: #667eea;
+    color: white;
+}

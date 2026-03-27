@@ -1,0 +1,84 @@
+/* playlist.css - Playlist page styling */
+
+.playlist-header {
+    margin-bottom: 2rem;
+}
+
+.playlist-title {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.playlist-info {
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.playlist-stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.playlist-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.playlist-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.share-btn, .edit-btn, .delete-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.share-btn {
+    background: #667eea;
+    color: white;
+}
+
+.edit-btn {
+    background: #ffc107;
+    color: #333;
+}
+
+.delete-btn {
+    background: #ff6b6b;
+    color: white;
+}
+
+.playlist-songs {
+    margin-top: 2rem;
+}
+
+.song-order {
+    display: inline-block;
+    width: 30px;
+    font-weight: bold;
+    color: #667eea;
+}
+
+.remove-song-btn {
+    background: none;
+    border: none;
+    color: #ff6b6b;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: transform 0.2s;
+}
+
+.remove-song-btn:hover {
+    transform: scale(1.1);
+}

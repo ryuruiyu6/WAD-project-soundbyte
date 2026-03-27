@@ -4,11 +4,117 @@
     margin: 0 auto;
 }
 
-.test-button {
-    background: #667eea;
+.profile-header,
+.profile-content {
+    margin-bottom: 24px;
+}
+
+.profile-info {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.profile-avatar img {
+    width: 132px;
+    height: 132px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.profile-avatar {
+    width: 132px;
+    height: 132px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+}
+
+.profile-details {
+    flex: 1;
+    min-width: 260px;
+}
+
+.profile-name {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.profile-username,
+.profile-bio {
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.profile-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 16px;
+    align-items: stretch;
+}
+
+.stat {
+    background: rgba(102, 126, 234, 0.08);
+    border-radius: 14px;
+    padding: 12px;
+    min-width: 140px;
+    flex: 0 0 auto;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.profile-actions form {
+    display: inline-flex;
+    margin: 0;
+}
+
+.profile-actions .action-btn {
+    white-space: nowrap;
+}
+
+.summary-card,
+.song-card,
+.comment-card {
+    background: rgba(102, 126, 234, 0.05);
+    border: 1px solid rgba(102, 126, 234, 0.12);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.profile-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.section-title {
+    margin: 24px 0 12px;
+}
+
+@media (max-width: 768px) {
+    .profile-info {
+        flex-direction: column;
+    }
+
+    .profile-stats {
+        flex-direction: column;
+    }
+
+    .stat {
+        width: 100%;
+    }
 }

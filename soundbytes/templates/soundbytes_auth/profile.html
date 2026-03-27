@@ -8,7 +8,7 @@
 {% block title %}Profile - {{ profile_user.username }}{% endblock %}
 
 {% block body %}
-<div class="profile-container">
+<div class="content-card profile-container">
     <div class="profile-header">
         <div class="profile-info">
             <div class="profile-avatar">
@@ -74,37 +74,45 @@
                     {% endif %}
                 {% endif %}
                 <button id="like-page-btn" class="action-btn">❤️ <span id="page-likes-count">{{ total_song_likes }}</span> Likes</button>
-                <button id="share-profile-btn" class="action-btn">📤 Share</button>
-                <button id="dark-mode-toggle" class="action-btn">🌙 Dark Mode</button>
             </div>
         </div>
     </div>
 
     <div class="profile-content">
-        <!-- Search Section -->
-        <div class="search-container">
-            <input type="text" id="profile-search" placeholder="🔍 Search songs on this profile..." class="search-input">
-            <div id="search-results" style="display: none;"></div>
+        <div class="profile-summary-grid">
+            <div class="summary-card">
+                <h3>Most liked song</h3>
+                {% if top_liked_song %}
+                    <p><strong>{{ top_liked_song.title }}</strong></p>
+                    <p>{{ top_liked_song.like_count }} likes</p>
+                {% else %}
+                    <p>No songs yet.</p>
+                {% endif %}
+            </div>
+            <div class="summary-card">
+                <h3>Most viewed song</h3>
+                {% if top_viewed_song %}
+                    <p><strong>{{ top_viewed_song.title }}</strong></p>
+                    <p>{{ top_viewed_song.view_count }} views</p>
+                {% else %}
+                    <p>No songs yet.</p>
+                {% endif %}
+            </div>
+            <div class="summary-card">
+                <h3>Most downloaded song</h3>
+                {% if top_downloaded_song %}
+                    <p><strong>{{ top_downloaded_song.title }}</strong></p>
+                    <p>{{ top_downloaded_song.download_count }} downloads</p>
+                {% else %}
+                    <p>No songs yet.</p>
+                {% endif %}
+            </div>
         </div>
-
-        <!-- Color Picker -->
-        <div class="color-picker-container">
-            <label>🎨 Theme Color: </label>
-            <input type="color" id="color-picker" value="#667eea">
-        </div>
-
-        <!-- Recommendations Section -->
-        <h2 class="section-title">🎧 Recommended For You</h2>
-        <div id="recommendations-list" class="recommendations-list"></div>
-
-        <!-- Activity Section -->
-        <h2 class="section-title">📝 Recent Activity</h2>
-        <div id="activity-list" class="activity-list"></div>
 
         <h2 class="section-title">🎵 Songs</h2>
         <div>
             {% for song in songs %}
-                <div style="border:1px solid #ccc; padding:15px; margin:15px 0; border-radius:8px;">
+                <div class="song-card">
                     <h3>{{ song.title }}</h3>
                     <p>Album: <a href="{% url 'soundbytes:album_page' song.album.id %}">{{ song.album.title }}</a></p>
                     <p>Views: {{ song.view_count }} | Downloads: {{ song.download_count }} | Likes: {{ song.like_count }}</p>
@@ -136,31 +144,14 @@
         <h2 class="section-title">💬 Recent Comments</h2>
         <div>
             {% for comment in recent_comments %}
-                <p>{{ comment.user.username }} on {{ comment.song.title }}: {{ comment.body }}</p>
+                <div class="comment-card">
+                    <p><strong>{{ comment.user.username }}</strong> on <strong>{{ comment.song.title }}</strong></p>
+                    <p>{{ comment.body }}</p>
+                </div>
             {% empty %}
                 <p>No comments yet.</p>
             {% endfor %}
         </div>
     </div>
 </div>
-
-<!-- Edit Profile Modal -->
-<div id="edit-profile-modal" class="modal">
-    <div class="modal-content">
-        <h3>Edit Profile</h3>
-        <form id="edit-profile-form" enctype="multipart/form-data">
-            {% csrf_token %}
-            <input type="text" name="artist_name" placeholder="Artist Name" value="{{ profile.artist_name|default:'' }}">
-            <textarea name="bio" placeholder="Bio" rows="4">{{ profile.bio|default:'' }}</textarea>
-            <input type="file" name="profile_picture" accept="image/*">
-            <button type="submit" class="action-btn">Save Changes</button>
-            <button type="button" class="close-modal action-btn" style="background: #999;">Cancel</button>
-        </form>
-    </div>
-</div>
-{% endblock %}
-
-{% block extra_js %}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="{% static 'js/profile.js' %}"></script>
 {% endblock %}
