@@ -61,7 +61,7 @@ class Profile(models.Model):
         ordering = ['-date_joined_profile']
     
     def get_display_name(self):
-        return self.display_name if self.display_name else self.user.username
+        return self.artist_name if self.artist_name else self.user.username
     
     def is_artist(self):
         return self.user_type in ['ARTIST']
@@ -73,7 +73,7 @@ class Profile(models.Model):
         return self.user.following.count()
 
 class Playlist(models.Model):
-    playlist_title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
     songs = models.ManyToManyField('Song')
 
     def __str__(self):

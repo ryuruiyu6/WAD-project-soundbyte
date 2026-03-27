@@ -50,6 +50,12 @@ album, created = Album.objects.get_or_create(
     artist='Test Artist'
 )
 
+#create songs
+for n in ['a','b','c','d','e','f']:
+    song,created = Song.objects.get_or_create(
+        
+    )
+
 for n in ['Golf','Hotel','Indigo','Juliett','Kilo','Lima']:
     user, = User.objects.get(username=n)
 
