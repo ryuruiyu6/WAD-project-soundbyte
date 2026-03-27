@@ -21,15 +21,13 @@ def signup(request):
     registered = False
     if request.method == 'POST':
         user_form = UserForm(request.POST)
-        profile_form = ProfileForm(request.POST)
+        profile_form = ProfileForm(request.POST, request.FILES)
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save()
             user.set_password(user.password)
             user.save()
             profile = profile_form.save(commit=False)
             profile.user = user
-            if 'picture' in request.FILES:
-                profile.picture = request.FILES['picture']
             profile.save()
             registered = True
         else:
@@ -233,6 +231,12 @@ def upload_post(request):
 def profile(request, username):
     user = get_object_or_404(User, username=username)
     profile = user.profile
+    songs = Song.objects.filter(artist=user.username).order_by('-upload_date')
+    recent_comments = Comment.objects.filter(song__artist=user.username).order_by('-created_at')[:10]
+    total_song_views = sum(song.view_count for song in songs)
+    total_song_downloads = sum(song.download_count for song in songs)
+    total_song_likes = sum(song.like_count for song in songs)
+    total_song_comments = Comment.objects.filter(song__artist=user.username).count()
     
     # Increment profile views
     if request.user.is_authenticated and request.user != user:
@@ -245,10 +249,16 @@ def profile(request, username):
     
     # Get analytics data (only for artists)
     analytics = get_analytics_context(user) if profile.is_artist() else None
-    if (profile.is_artist):
+    if profile.is_artist():
         context = {
             'profile_user': user,
             'profile': profile,
+            'songs': songs,
+            'recent_comments': recent_comments,
+            'total_song_views': total_song_views,
+            'total_song_downloads': total_song_downloads,
+            'total_song_likes': total_song_likes,
+            'total_song_comments': total_song_comments,
             'is_own_profile': request.user.is_authenticated and request.user == user,
             'is_following': is_following,
             #'analytics': analytics,
@@ -259,6 +269,12 @@ def profile(request, username):
         context = {
             'profile_user': user,
             'profile': profile,
+            'songs': songs,
+            'recent_comments': recent_comments,
+            'total_song_views': total_song_views,
+            'total_song_downloads': total_song_downloads,
+            'total_song_likes': total_song_likes,
+            'total_song_comments': total_song_comments,
             'is_own_profile': request.user.is_authenticated and request.user == user,
             'is_following': is_following,
             #'stats': (request.user)

@@ -9,7 +9,7 @@
 	<h1>Sign up to Soundbytes</h1>
 	{% if registered %}
 		You are now registered
-		<a href="{% url 'soundbytes:home' %}">Go to home</a>
+		<a href="{% url 'soundbytes:signin' %}">Go to Sign In</a>
 	{% else %}
 		<form id="user_form" method="post" action="{% url 'soundbytes:signup' %}" enctype="multipart/form-data">
 			{% csrf_token %}

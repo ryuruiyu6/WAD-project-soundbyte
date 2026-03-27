@@ -1,3 +1,9 @@
+{% extends 'authbase.html' %}
+
+{% block title %}Album{% endblock %}
+
+{% block body %}
+<div class="content-card">
 <h2>{{ album.title }}</h2>
 <p>{{ album.artist }}</p>
 
@@ -16,3 +22,5 @@
         </audio>
     </div>
 {% endfor %}
+</div>
+{% endblock %}

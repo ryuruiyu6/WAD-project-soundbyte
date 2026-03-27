@@ -17,14 +17,19 @@
             <div class="sidebar-main" id="sidebar-main" style="display:none">
                 <button class="sidebar-button" id="sidebar-close" onclick="sb_close()">Close</button>
                 <a href="{% url 'soundbytes:home' %}" class="sidebar-button">Home</a>
-                <a href="{% url 'soundbytes:profile' user.username %}" class="sidebar-button">{{ user.username }}'s Profile</a>
                 <a href="{% url 'soundbytes:top' %}" class="sidebar-button">Top</a>
                 <a href="{% url 'soundbytes:trending' %}" class="sidebar-button">Trending</a>
                 <a href="{% url 'soundbytes:search_page' %}" class="sidebar-button">Search</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'soundbytes:profile' user.username %}" class="sidebar-button">{{ user.username }}'s Profile</a>
                 <a href="{% url 'soundbytes:playlists' user.username %}" class="sidebar-button">My Playlists</a>
-                {% if registered %}
-                    <a href="{% url 'soundbytes:create_album' %}" class="sidebar-button">Create Album</a>
-                    <a href="{% url 'soundbytes:upload' %}" class="sidebar-button">Upload Song</a>
+                <a href="{% url 'soundbytes:create_album' %}" class="sidebar-button">Create Album</a>
+                <a href="{% url 'soundbytes:upload' %}" class="sidebar-button">Upload Song</a>
+                <a href="{% url 'soundbytes:signout' %}" class="sidebar-button">Sign Out</a>
+            {% else %}
+                <a href="{% url 'soundbytes:signin' %}" class="sidebar-button">Sign In</a>
+                <a href="{% url 'soundbytes:signup' %}" class="sidebar-button">Sign Up</a>
+            {% endif %}
                 {% endif %}
             </div>
 
