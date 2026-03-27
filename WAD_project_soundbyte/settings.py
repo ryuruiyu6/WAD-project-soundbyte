@@ -19,16 +19,39 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static')
 MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 
 
+def env_flag(name, default=False):
+    value = os.environ.get(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {'1', 'true', 'yes', 'on'}
+
+
+def env_list(name, default=''):
+    raw = os.environ.get(name, default)
+    return [item.strip() for item in raw.split(',') if item.strip()]
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'p^czavq92h^0+tru7-@n+e)$r$93s*9eco1s^nw-)@u)ee(_5z'
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    'p^czavq92h^0+tru7-@n+e)$r$93s*9eco1s^nw-)@u)ee(_5z',
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env_flag('DJANGO_DEBUG', default=True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env_list(
+    'DJANGO_ALLOWED_HOSTS',
+    default='127.0.0.1,localhost,.pythonanywhere.com',
+)
+
+CSRF_TRUSTED_ORIGINS = env_list(
+    'DJANGO_CSRF_TRUSTED_ORIGINS',
+    default='https://*.pythonanywhere.com',
+)
 
 LOGIN_URL = '/soundbytes/signin/'
 
@@ -124,6 +147,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # urls for covers and mp3 files!
 MEDIA_URL = '/media/'
