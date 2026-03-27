@@ -63,7 +63,20 @@ def signout(request):
     return redirect(reverse('soundbytes:landing'))
 
 def home(request):
-    return render(request,'soundbytes_auth/home.html')
+    recent_songs = Song.objects.order_by('-upload_date')[:6]
+    trending_songs = sorted(
+        Song.objects.all(),
+        key=lambda song: (song.like_count * 3) + (song.view_count * 2) + (song.download_count * 4),
+        reverse=True,
+    )[:5]
+    recent_posts = Post.objects.order_by('-created_at')[:4]
+
+    context = {
+        'recent_songs': recent_songs,
+        'trending_songs': trending_songs,
+        'recent_posts': recent_posts,
+    }
+    return render(request, 'soundbytes_auth/home.html', context)
 
 
 @csrf_exempt
@@ -205,7 +218,7 @@ def trending_page(request):
     return render(request, 'soundbytes_auth/trending.html', {'results': results})
 
 def top_page(request):
-    return render(request, 'soundbytes_auth/top.html')
+    return redirect(reverse('soundbytes:trending'))
 
 def upload(request):
     print("UPLOAD ROUTER HIT")
@@ -237,6 +250,9 @@ def profile(request, username):
     total_song_downloads = sum(song.download_count for song in songs)
     total_song_likes = sum(song.like_count for song in songs)
     total_song_comments = Comment.objects.filter(song__artist=user.username).count()
+    top_liked_song = songs.order_by('-like_count', '-view_count').first()
+    top_viewed_song = songs.order_by('-view_count', '-like_count').first()
+    top_downloaded_song = songs.order_by('-download_count', '-view_count').first()
     
     # Increment profile views
     if request.user.is_authenticated and request.user != user:
@@ -247,8 +263,6 @@ def profile(request, username):
     # Check if user is following
     is_following = request.user.is_authenticated and request.user in profile.followers.all()
     
-    # Get analytics data (only for artists)
-    analytics = get_analytics_context(user) if profile.is_artist() else None
     if profile.is_artist():
         context = {
             'profile_user': user,
@@ -259,11 +273,11 @@ def profile(request, username):
             'total_song_downloads': total_song_downloads,
             'total_song_likes': total_song_likes,
             'total_song_comments': total_song_comments,
+            'top_liked_song': top_liked_song,
+            'top_viewed_song': top_viewed_song,
+            'top_downloaded_song': top_downloaded_song,
             'is_own_profile': request.user.is_authenticated and request.user == user,
             'is_following': is_following,
-            #'analytics': analytics,
-            #'top_songs': get_top_songs() if profile.is_artist() else None,
-            #'engagement': get_engagement() if profile.is_artist() else None,
         }
     else:
         context = {
@@ -275,33 +289,13 @@ def profile(request, username):
             'total_song_downloads': total_song_downloads,
             'total_song_likes': total_song_likes,
             'total_song_comments': total_song_comments,
+            'top_liked_song': top_liked_song,
+            'top_viewed_song': top_viewed_song,
+            'top_downloaded_song': top_downloaded_song,
             'is_own_profile': request.user.is_authenticated and request.user == user,
             'is_following': is_following,
-            #'stats': (request.user)
         }
     return render(request,'soundbytes_auth/profile.html', context)
-
-def get_analytics_context(user):
-    """Generate analytics data for an artist"""
-    from django.db.models import Sum, Count
-    
-    # This is mock data - replace with actual database queries
-    return {
-        'monthly_listeners': '78.4M',
-        'countries': '156',
-        'total_hours': '2.4M',
-        'total_streams': '18.2M',
-        'new_listeners': '342K',
-        'top_region': 'United States',
-        'top_region_percent': 42,
-        'top_regions': [
-            {'flag': '🇺🇸', 'name': 'United States', 'percent': 82},
-            {'flag': '🇬🇧', 'name': 'United Kingdom', 'percent': 67},
-        ],
-        'discovery_rate': 34,
-        'active_day': 'Friday',
-        'active_day_multiplier': '2.8',
-    }
 
 def download_song(request, song_id):
     song = get_object_or_404(Song, id=song_id)
@@ -391,14 +385,9 @@ def creator_dashboard(request):
 
 def playlists(request, username):
     user = get_object_or_404(User, username=username)
-    profile = user.profile
-    playlist_list = []
-    playlists = Playlist.objects.filter(user=user)
-    for playlist in playlists:
-        playlist_list.append(playlist)
     context = {
             'user': user,
-            'playlists': playlist_list
+            'playlists': Playlist.objects.filter(user=user).order_by('title'),
     }
     return render(request, 'soundbytes_auth/playlists.html', context)
 
