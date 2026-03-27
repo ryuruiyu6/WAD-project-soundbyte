@@ -21,7 +21,7 @@
                 <a href="{% url 'soundbytes:top' %}" class="sidebar-button">Top</a>
                 <a href="{% url 'soundbytes:trending' %}" class="sidebar-button">Trending</a>
                 <a href="{% url 'soundbytes:search_page' %}" class="sidebar-button">Search</a>
-                <a href="{% url 'soundbytes:playlist' user.username %}" class="sidebar-button">My Playlists</a>
+                <a href="{% url 'soundbytes:playlists' user.username %}" class="sidebar-button">My Playlists</a>
                 {% if registered %}
                     <a href="{% url 'soundbytes:create_album' %}" class="sidebar-button">Create Album</a>
                     <a href="{% url 'soundbytes:upload' %}" class="sidebar-button">Upload Song</a>

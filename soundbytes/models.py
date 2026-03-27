@@ -73,7 +73,7 @@ class Profile(models.Model):
         return self.user.following.count()
 
 class Playlist(models.Model):
-    title = models.CharField(max_length=255)
+    playlist_title = models.CharField(max_length=255)
     songs = models.ManyToManyField('Song')
 
     def __str__(self):
