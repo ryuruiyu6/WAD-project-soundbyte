@@ -4,7 +4,7 @@ import django
 django.setup()
 
 from django.contrib.auth.models import User
-from soundbytes.models import Genre, Album, Song, Profile
+from soundbytes.models import Genre, Album, Song, Profile, Playlist
 
 # Create test user
 user, created = User.objects.get_or_create(username='testuser')
@@ -12,6 +12,7 @@ if created:
     user.set_password('testpass123')
     user.save()
 
+#test artists
 for n in ['Alpha','Beta','Charlie','Delta','Echo','Foxtrot']:
     user, user_created = User.objects.get_or_create(username=n)
     if user_created:
@@ -24,7 +25,7 @@ for n in ['Alpha','Beta','Charlie','Delta','Echo','Foxtrot']:
             profile.artist_name=f'{n} Doe'
             profile.save()
         
-
+#test listeners
 for n in ['Golf','Hotel','Indigo','Juliett','Kilo','Lima']:
     user, user_created = User.objects.get_or_create(username=n)
     if user_created:
@@ -48,5 +49,9 @@ album, created = Album.objects.get_or_create(
     title='Sample Album',
     artist='Test Artist'
 )
+
+for n in ['Golf','Hotel','Indigo','Juliett','Kilo','Lima']:
+    user, = User.objects.get(username=n)
+
 
 print("Database populated successfully!")
