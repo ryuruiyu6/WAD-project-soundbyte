@@ -8,7 +8,7 @@
             <div>
                 <p>
                     {{ song.data.title }} -
-                    <a href="{% url 'soundbytes:profile' song.data.artist %}">{{ song.data.artist }}</a>
+                    <a href="{% url 'soundbytes:profile' username=song.data.artist %}">{{ song.data.artist }}</a>
                 </p>
 
                 <p>Views: {{ song.data.view_count }}</p>

@@ -8,4 +8,9 @@
             <a href="{% url 'soundbytes:playlist' username=user.username slug=p.slug %}">{{ p }}</a>
         </div>
     {% endfor %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create Playlist</button>
+    </form>
 {% endblock %}
