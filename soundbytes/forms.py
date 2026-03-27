@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
-from soundbytes.models import Profile
+from .models import Profile,Playlist
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
@@ -24,3 +24,14 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ('artist_name','profile_picture','user_type','bio')
+
+class PlaylistForm(forms.ModelForm):
+    class Meta:
+        model = Playlist
+        fields = ['title']  # only the playlist title is needed
+        widgets = {
+            'title': forms.TextInput(attrs={'placeholder': 'Playlist Title'}),
+        }
+        labels = {
+            'title': 'Playlist Name',
+        }

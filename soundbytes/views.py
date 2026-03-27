@@ -6,7 +6,7 @@ from django.http import HttpResponse, JsonResponse, FileResponse
 from django.views.decorators.csrf import csrf_exempt
 from .functions.file_manager import create_song
 from .functions.search_function import search, sort_songs
-from .forms import UserForm,ProfileForm
+from .forms import UserForm,ProfileForm,PlaylistForm
 from .models import Comment, Download, Follow, Genre, Like, Song, Album, User, Profile, Post, ProfileView, Playlist
 
 def landing(request):
@@ -242,6 +242,7 @@ def upload_post(request):
 
 # Update your profile_view to include analytics
 def profile(request, username):
+    logged=request.user
     user = get_object_or_404(User, username=username)
     profile = user.profile
     songs = Song.objects.filter(artist=user.username).order_by('-upload_date')
@@ -253,6 +254,7 @@ def profile(request, username):
     top_liked_song = songs.order_by('-like_count', '-view_count').first()
     top_viewed_song = songs.order_by('-view_count', '-like_count').first()
     top_downloaded_song = songs.order_by('-download_count', '-view_count').first()
+    playlists=Playlist.objects.filter(user=logged)
     
     # Increment profile views
     if request.user.is_authenticated and request.user != user:
@@ -278,6 +280,8 @@ def profile(request, username):
             'top_downloaded_song': top_downloaded_song,
             'is_own_profile': request.user.is_authenticated and request.user == user,
             'is_following': is_following,
+            'playlists':playlists,
+            'logged':logged
         }
     else:
         context = {
@@ -294,6 +298,7 @@ def profile(request, username):
             'top_downloaded_song': top_downloaded_song,
             'is_own_profile': request.user.is_authenticated and request.user == user,
             'is_following': is_following,
+            'playlists':playlists,
         }
     return render(request,'soundbytes_auth/profile.html', context)
 
@@ -386,9 +391,21 @@ def creator_dashboard(request):
 @login_required
 def playlists(request, username):
     user = get_object_or_404(User, username=username)
+
+    if request.method == 'POST':
+        form = PlaylistForm(request.POST)
+        if form.is_valid():
+            playlist = form.save(commit=False)
+            playlist.user = request.user  # assign the current user
+            playlist.save()  # slug is generated automatically in model
+            return redirect('profile', username=request.user.username)
+    else:
+        form = PlaylistForm()
+
     context = {
             'user': user,
             'playlists': Playlist.objects.filter(user=user).order_by('title'),
+            'form':form
     }
     return render(request, 'soundbytes_auth/playlists.html', context)
 
@@ -399,8 +416,7 @@ def playlist(request, username, slug):
     songs = playlist.songs.all()
     results=[]
     for song in songs:
-        score = ((song.like_count * 3) + (song.view_count * 2) + (song.download_count * 4))
-        results.append({'type': 'song', 'data': song, 'score': score})
+        results.append({'data': song})
     context={
         'user':user,
         'playlist':playlist,
@@ -409,18 +425,12 @@ def playlist(request, username, slug):
     return render(request, 'soundbytes_auth/playlist.html', context)
 
 @login_required
-def add_to_playlist(request, song_id):
-    if request.method != 'POST':
-        return redirect(reverse('soundbytes:search_page'))
-
-    song = get_object_or_404(Song, id=song_id)
-    like, created = Like.objects.get_or_create(user=request.user, song=song)
-
-    if created:
-        song.like_count += 1
-    else:
-        like.delete()
-        song.like_count = max(0, song.like_count - 1)
-
-    song.save()
-    return redirect(request.META.get('HTTP_REFERER', reverse('soundbytes:search_page')))
+def add_to_playlist(request):
+    user = request.user
+    if request.method == "POST":
+        song_id = request.POST.get("song_id")
+        slug = request.POST.get("playlist_slug")
+        song = get_object_or_404(Song, id=song_id)
+        playlist = get_object_or_404(Playlist, slug=slug, user=user)
+        playlist.songs.add(song)
+        return redirect("soundbytes:profile", username=user.username)
