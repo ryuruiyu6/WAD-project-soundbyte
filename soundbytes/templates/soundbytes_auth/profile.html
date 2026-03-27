@@ -122,6 +122,10 @@
                             <input type="text" name="body" placeholder="Add a comment">
                             <button type="submit">Comment</button>
                         </form>
+                        <form method="post" action="{% url 'soundbytes:add_to_playlist' song.id %}" style="margin-top:10px;">
+                            {% csrf_token %}
+                            <button type="submit">Add to a playlist</button>
+                        </form>
                     {% endif %}
                 </div>
             {% empty %}

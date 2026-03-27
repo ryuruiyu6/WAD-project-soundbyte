@@ -27,7 +27,5 @@ urlpatterns = [
     path('follow/<str:username>/', views.toggle_follow, name='toggle_follow'),
     path('playlists/<str:username>/', views.playlists, name='playlists'),
     path('playlists/<str:username>/<slug:slug>/', views.playlist, name='playlist'),
-    #path('profile/<str:username>/follow/', views.follow_user, name='follow_user'),
-    #path('profile/edit/', views.profile_edit, name='profile_edit'),
-    #path('analytics/<str:username>/', views.analytics, name='analytics'),
+    path('playlist/<int:song_id>', views.add_to_playlist,name='add_to_playlist')
 ]

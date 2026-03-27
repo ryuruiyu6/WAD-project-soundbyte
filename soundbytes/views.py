@@ -389,6 +389,7 @@ def creator_dashboard(request):
     }
     return JsonResponse(summary)
 
+@login_required
 def playlists(request, username):
     user = get_object_or_404(User, username=username)
     profile = user.profile
@@ -402,6 +403,7 @@ def playlists(request, username):
     }
     return render(request, 'soundbytes_auth/playlists.html', context)
 
+@login_required
 def playlist(request, username, slug):
     user = get_object_or_404(User, username=username)
     playlist = get_object_or_404(Playlist,user=user,slug=slug)
@@ -416,3 +418,20 @@ def playlist(request, username, slug):
         'songs':results
         }
     return render(request, 'soundbytes_auth/playlist.html', context)
+
+@login_required
+def add_to_playlist(request, song_id):
+    if request.method != 'POST':
+        return redirect(reverse('soundbytes:search_page'))
+
+    song = get_object_or_404(Song, id=song_id)
+    like, created = Like.objects.get_or_create(user=request.user, song=song)
+
+    if created:
+        song.like_count += 1
+    else:
+        like.delete()
+        song.like_count = max(0, song.like_count - 1)
+
+    song.save()
+    return redirect(request.META.get('HTTP_REFERER', reverse('soundbytes:search_page')))
