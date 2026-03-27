@@ -61,7 +61,7 @@ class Profile(models.Model):
         ordering = ['-date_joined_profile']
     
     def get_display_name(self):
-        return self.display_name if self.display_name else self.user.username
+        return self.artist_name if self.artist_name else self.user.username
     
     def is_artist(self):
         return self.user_type in ['ARTIST']

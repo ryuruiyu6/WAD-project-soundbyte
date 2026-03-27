@@ -7,8 +7,4 @@ $(document).ready(function() {
         alert('JavaScript is working!');
     });
     
-    // Follow button functionality
-    $('#follow-btn').click(function() {
-        alert('Follow functionality coming soon!');
-    });
 });
