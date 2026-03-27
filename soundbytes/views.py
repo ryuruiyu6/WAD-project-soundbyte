@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .functions.file_manager import create_song
 from .functions.search_function import search, sort_songs
 from .forms import UserForm,ProfileForm
-from .models import Song, Genre, Album, User, Profile, Post
+from .models import Comment, Download, Follow, Genre, Like, Song, Album, User, Profile, Post, ProfileView
 
 def landing(request):
 
@@ -238,6 +238,7 @@ def profile(request, username):
     if request.user.is_authenticated and request.user != user:
         profile.profile_views += 1
         profile.save(update_fields=['profile_views'])
+        ProfileView.objects.create(viewer=request.user, profile_user=user)
     
     # Check if user is following
     is_following = request.user.is_authenticated and request.user in profile.followers.all()
@@ -249,7 +250,7 @@ def profile(request, username):
             'profile_user': user,
             'profile': profile,
             'is_own_profile': request.user.is_authenticated and request.user == user,
-            #'is_following': is_following,
+            'is_following': is_following,
             #'analytics': analytics,
             #'top_songs': get_top_songs() if profile.is_artist() else None,
             #'engagement': get_engagement() if profile.is_artist() else None,
@@ -259,6 +260,7 @@ def profile(request, username):
             'profile_user': user,
             'profile': profile,
             'is_own_profile': request.user.is_authenticated and request.user == user,
+            'is_following': is_following,
             #'stats': (request.user)
         }
     return render(request,'soundbytes_auth/profile.html', context)
@@ -284,3 +286,90 @@ def get_analytics_context(user):
         'active_day': 'Friday',
         'active_day_multiplier': '2.8',
     }
+
+
+def download_song(request, song_id):
+    song = get_object_or_404(Song, id=song_id)
+    Download.objects.create(
+        user=request.user if request.user.is_authenticated else None,
+        song=song,
+    )
+    song.download_count += 1
+    song.save()
+    filename = song.audio_file.name.split('/')[-1]
+    return FileResponse(song.audio_file.open(), as_attachment=True, filename=filename)
+
+
+@login_required
+def toggle_like(request, song_id):
+    if request.method != 'POST':
+        return redirect(reverse('soundbytes:search_page'))
+
+    song = get_object_or_404(Song, id=song_id)
+    like, created = Like.objects.get_or_create(user=request.user, song=song)
+
+    if created:
+        song.like_count += 1
+    else:
+        like.delete()
+        song.like_count = max(0, song.like_count - 1)
+
+    song.save()
+    return redirect(request.META.get('HTTP_REFERER', reverse('soundbytes:search_page')))
+
+
+@login_required
+def add_comment(request, song_id):
+    if request.method == 'POST':
+        song = get_object_or_404(Song, id=song_id)
+        body = request.POST.get('body', '').strip()
+        if body:
+            Comment.objects.create(user=request.user, song=song, body=body)
+
+    return redirect(request.META.get('HTTP_REFERER', reverse('soundbytes:search_page')))
+
+
+@login_required
+def toggle_follow(request, username):
+    target_user = get_object_or_404(User, username=username)
+
+    if target_user == request.user:
+        return redirect(reverse('soundbytes:profile', args=[target_user.username]))
+
+    follow, created = Follow.objects.get_or_create(
+        follower=request.user,
+        following=target_user,
+    )
+
+    if created:
+        target_user.profile.followers.add(request.user)
+    else:
+        follow.delete()
+        target_user.profile.followers.remove(request.user)
+
+    return redirect(reverse('soundbytes:profile', args=[target_user.username]))
+
+
+@login_required
+def creator_dashboard(request):
+    user_songs = Song.objects.filter(artist=request.user.username).order_by('-upload_date')
+    summary = {
+        'songs': [
+            {
+                'id': song.id,
+                'title': song.title,
+                'album': song.album.title,
+                'views': song.view_count,
+                'downloads': song.download_count,
+                'likes': song.like_count,
+            }
+            for song in user_songs
+        ],
+        'total_views': sum(song.view_count for song in user_songs),
+        'total_downloads': sum(song.download_count for song in user_songs),
+        'total_likes': sum(song.like_count for song in user_songs),
+        'total_comments': Comment.objects.filter(song__in=user_songs).count(),
+        'follower_count': Follow.objects.filter(following=request.user).count(),
+        'profile_view_count': ProfileView.objects.filter(profile_user=request.user).count(),
+    }
+    return JsonResponse(summary)

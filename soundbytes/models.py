@@ -123,3 +123,40 @@ class Post(models.Model):
     image = models.ImageField(upload_to='posts/', blank=True, null=True)
     like_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='likes')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'song')
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='comments')
+    body = models.TextField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Follow(models.Model):
+    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following_links')
+    following = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follower_links')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('follower', 'following')
+
+
+class Download(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='downloads')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class ProfileView(models.Model):
+    viewer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='profile_views_made')
+    profile_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='profile_views_received')
+    created_at = models.DateTimeField(auto_now_add=True)
