@@ -51,13 +51,38 @@ album, created = Album.objects.get_or_create(
 )
 
 #create songs
-for n in ['a','b','c','d','e','f']:
-    song,created = Song.objects.get_or_create(
-        
-    )
+for name in ['Alpha','Beta']:
+    for songname in ['a','b','c','d','e','f']:
+        album, created = Album.objects.get_or_create(
+            title='Singles',
+            artist=name
+        )
+        song, created = Song.objects.get_or_create(
+        title=songname,
+        artist=name,
+        album=album
+        )
+        song.genres.set([Genre.objects.get(name='Rock')])
+        #song.audio_file = models.FileField(upload_to = 'songs/')
+
+aSongs = Song.objects.filter(artist='Alpha')
+bSongs = Song.objects.filter(artist='Beta')
 
 for n in ['Golf','Hotel','Indigo','Juliett','Kilo','Lima']:
-    user, = User.objects.get(username=n)
-
+    user = User.objects.get(username=n)
+    playlist1 = Playlist(user=user, title='Playlist 1')
+    playlist1.save()
+    playlist1.songs.add(aSongs[0])
+    playlist1.songs.add(aSongs[1])
+    playlist1.songs.add(aSongs[2])
+    playlist1.songs.add(aSongs[3])
+    playlist1.songs.add(aSongs[4])
+    playlist1.songs.add(aSongs[5])
+    playlist2= Playlist(user=user,title='Playlist 2')
+    playlist2.save()
+    playlist2.songs.add(bSongs[0])
+    playlist2.songs.add(bSongs[1])
+    playlist2.songs.add(aSongs[2])
+    playlist2.songs.add(aSongs[3])    
 
 print("Database populated successfully!")

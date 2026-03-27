@@ -393,11 +393,26 @@ def playlists(request, username):
     user = get_object_or_404(User, username=username)
     profile = user.profile
     playlist_list = []
-    playlists = Playlist.objects.all()
+    playlists = Playlist.objects.filter(user=user)
     for playlist in playlists:
-        playlist_list.append(playlist.playlist_title)
+        playlist_list.append(playlist)
     context = {
             'user': user,
             'playlists': playlist_list
     }
     return render(request, 'soundbytes_auth/playlists.html', context)
+
+def playlist(request, username, slug):
+    user = get_object_or_404(User, username=username)
+    playlist = get_object_or_404(Playlist,user=user,slug=slug)
+    songs = playlist.songs.all()
+    results=[]
+    for song in songs:
+        score = ((song.like_count * 3) + (song.view_count * 2) + (song.download_count * 4))
+        results.append({'type': 'song', 'data': song, 'score': score})
+    context={
+        'user':user,
+        'playlist':playlist,
+        'songs':results
+        }
+    return render(request, 'soundbytes_auth/playlist.html', context)

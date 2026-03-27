@@ -3,9 +3,9 @@
 
 {% block body %}
     <h1>{{ user.username }}'s Playlists</h1>
-    {% for p in playlist_list %}
+    {% for p in playlists %}
         <div style="border:1px solid #ccc; padding:15px; margin:15px 0; border-radius:8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: table;">
-            <a href="{% url 'soundbytes:playlist' p %}">{{ p }}</a>
+            <a href="{% url 'soundbytes:playlist' username=user.username slug=p.slug %}">{{ p }}</a>
         </div>
     {% endfor %}
 {% endblock %}

@@ -73,8 +73,23 @@ class Profile(models.Model):
         return self.user.following.count()
 
 class Playlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     songs = models.ManyToManyField('Song')
+    slug = models.SlugField()
+
+    class Meta:
+        unique_together = ('user', 'slug')
+
+    def save(self,*args,**kwargs):
+        if not self.slug:
+            clean_slug=slugify(self.title)
+            i = 1
+            while Playlist.objects.filter(user=self.user,slug=clean_slug).exists():
+                clean_slug = clean_slug + f'{i}'
+                i+=1
+            self.slug = clean_slug
+        super().save(*args,**kwargs)
 
     def __str__(self):
         return self.title
